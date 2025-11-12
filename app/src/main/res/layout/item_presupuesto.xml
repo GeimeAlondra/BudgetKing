@@ -7,7 +7,7 @@
     android:layout_margin="8dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="4dp"
-    app:cardBackgroundColor="#F8F9FA">
+    app:cardBackgroundColor="#FFFFFF">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -55,26 +55,9 @@
             android:layout_marginTop="4dp"
             android:gravity="center_vertical">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Saldo disponible:"
-                android:textSize="12sp"
-                android:textColor="#666666" />
 
-            <TextView
-                android:id="@+id/tvSaldoDisponible"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="$0.00"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:textColor="#4CAF50"
-                android:background="#E8F5E8"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="2dp"
-                android:gravity="center" />
+
+
 
         </LinearLayout>
 
@@ -154,7 +137,22 @@
 
             </LinearLayout>
 
+
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvSaldoDisponible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="$0.00"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#4CAF50"
+            android:background="#E8F5E8"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="2dp"
+            android:gravity="center"
+            android:layout_marginTop="10dp"/>
 
         <!-- Línea divisoria -->
         <View
@@ -171,14 +169,18 @@
             android:layout_marginTop="8dp"
             android:gravity="center_vertical">
 
+            <!-- Agrega este TextView en tu item_presupuesto.xml -->
             <TextView
-                android:id="@+id/tvEstado"
-                android:layout_width="0dp"
+                android:id="@+id/tvEstadoPresupuesto"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="Activo"
                 android:textSize="12sp"
-                android:textColor="#4CAF50"
+                android:paddingHorizontal="33dp"
+                android:paddingVertical="2dp"
+                android:background="@drawable/bg_estado_activo"
+                android:textColor="@android:color/white"
+                android:layout_weight="1"
                 android:drawablePadding="4dp" />
 
             <com.airbnb.lottie.LottieAnimationView
@@ -186,6 +188,7 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 app:lottie_rawRes="@raw/editpresupuesto"
+                android:layout_marginStart="100dp"
                 android:background="?attr/selectableItemBackground"
                 android:contentDescription="Editar presupuesto"/>
 

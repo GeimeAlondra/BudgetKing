@@ -123,7 +123,7 @@
                     android:layout_width="0dp"
                     android:layout_height="40dp"
                     android:layout_weight="1.5"
-                    android:backgroundTint="@color/celeste"
+                    android:backgroundTint="#000000"
                     android:text="Seleccionar"
                     android:textSize="12sp" />
 
@@ -144,7 +144,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginBottom="10dp"
-                android:backgroundTint="#4CAF50"
+                android:backgroundTint="#097117"
                 android:text="GUARDAR GASTO"
                 android:textSize="16sp" />
 
@@ -152,7 +152,7 @@
                 android:id="@+id/btnCancelarGasto"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:backgroundTint="#F44336"
+                android:backgroundTint="#920909"
                 android:text="CANCELAR"
                 android:textSize="16sp" />
 

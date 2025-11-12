@@ -114,9 +114,6 @@ class BarChartView @JvmOverloads constructor(
     }
 
     /**
-     * Dibuja las barras del gráfico CON ESPACIADO
-     */
-    /**
      * Dibuja los ejes X e Y CON MÁS ESPACIO SUPERIOR
      */
     private fun drawAxes(canvas: Canvas) {

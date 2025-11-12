@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import com.example.gastosapp.Models.Presupuesto
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 class PresupuestoViewModel : ViewModel() {
 
@@ -116,4 +118,61 @@ class PresupuestoViewModel : ViewModel() {
     fun getPresupuestoPorCategoria(categoriaId: Int): Presupuesto? {
         return _listaPresupuestos.value?.find { it.categoriaId == categoriaId }
     }
+
+    private fun haExpirado(fechaFinal: String?): Boolean {
+        if (fechaFinal.isNullOrEmpty()) return false
+
+        return try {
+            val formatoFecha = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            val fechaLimite = formatoFecha.parse(fechaFinal)
+            val hoy = Calendar.getInstance().apply {
+                set(Calendar.HOUR_OF_DAY, 0)
+                set(Calendar.MINUTE, 0)
+                set(Calendar.SECOND, 0)
+                set(Calendar.MILLISECOND, 0)
+            }.time
+
+            fechaLimite?.before(hoy) ?: false
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            false
+        }
+    }
+
+    /**
+     * Obtiene el estado del presupuesto (Activo/Expirado)
+     */
+    fun obtenerEstadoPresupuesto(presupuesto: Presupuesto): String {
+        return if (haExpirado(presupuesto.fechaFinal)) {
+            "Expirado"
+        } else {
+            "  Activo"
+        }
+    }
+
+    /**
+     * Elimina automáticamente los presupuestos expirados
+     */
+    fun limpiarPresupuestosExpirados() {
+        val uid = auth.currentUser?.uid ?: return
+        val listaActual = _listaPresupuestos.value ?: emptyList()
+
+        val presupuestosExpirados = listaActual.filter { haExpirado(it.fechaFinal) }
+        val idsExpirados = presupuestosExpirados.mapNotNull { it.id }
+
+        if (idsExpirados.isNotEmpty()) {
+            // Eliminar de Firebase
+            idsExpirados.forEach { id ->
+                FirebaseDatabase.getInstance()
+                    .reference.child("presupuestos").child(uid).child(id)
+                    .removeValue()
+            }
+
+            // Actualizar lista local
+            val nuevaLista = listaActual.filterNot { haExpirado(it.fechaFinal) }
+            _listaPresupuestos.value = nuevaLista
+        }
+    }
+
 }

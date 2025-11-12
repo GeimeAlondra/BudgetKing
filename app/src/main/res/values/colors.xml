@@ -27,5 +27,10 @@
     <color name="amarillo">#FFEB3B</color>
     <color name="morado">#9C27B0</color>
 
+    <color name="verde_formal">#10B981</color>
+    <color name="dorado">#FFD700</color>
+    <color name="background_gradient_start">#009688</color>
+    <color name="background_gradient_end">#3F51B5</color>
+
     #2E5A8A
 </resources>

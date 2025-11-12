@@ -1,67 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="12dp"
-    android:background="#F8F9FA"
     android:layout_marginBottom="8dp"
-    android:gravity="center_vertical">
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="#FFFFFF">
 
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/tvNombreGastoReciente"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nombre del gasto"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:gravity="center_vertical">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="4dp">
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tvCategoriaGastoReciente"
-                android:layout_width="wrap_content"
+                android:id="@+id/tvNombreGastoReciente"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Categoría"
-                android:textSize="12sp"
-                android:textColor="#666666"
-                android:background="#E0E0E0"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="2dp" />
+                android:text="Nombre del gasto"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tvFechaGastoReciente"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="01/01/2024"
-                android:textSize="12sp"
-                android:textColor="#666666"
-                android:layout_marginStart="8dp" />
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp">
+
+                <TextView
+                    android:id="@+id/tvCategoriaGastoReciente"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Categoría"
+                    android:textSize="12sp"
+                    android:textColor="#666666"
+                    android:background="#E0E0E0"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="2dp" />
+
+                <TextView
+                    android:id="@+id/tvFechaGastoReciente"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="01/01/2024"
+                    android:textSize="12sp"
+                    android:textColor="#666666"
+                    android:layout_marginStart="8dp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/tvMontoGastoReciente"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="-$0.00"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:background="#FFEBEE"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6px" />
+
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tvMontoGastoReciente"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="-$0.00"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:background="#FFEBEE"
-        android:paddingHorizontal="12dp"
-        android:paddingVertical="6px" />
-
-</LinearLayout>
+</androidx.cardview.widget.CardView>

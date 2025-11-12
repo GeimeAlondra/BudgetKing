@@ -46,6 +46,9 @@
     <string name="tv_userName">User</string>
     <string name="tv_userEmail">user@gmail.com</string>
     <string name="tv_cerrarSesion">Cerrar Sesion</string>
+    <string name="profile_picture">imagen de perfil</string>
+    <string name="txt_nivel_usuario">nivel de usuario</string>
+    <string name="txt_usuario_correo">usuario@correo</string>
 
     <!-- id fragment Presupuesto -->
 
