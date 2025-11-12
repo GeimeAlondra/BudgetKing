@@ -1,7 +1,7 @@
-// com.example.gastosapp.Fragments.FragmentGasto.kt
 package com.example.gastosapp.Fragments
 
 import android.os.Bundle
+import android.os.Looper
 import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
@@ -12,26 +12,20 @@ import com.example.gastosapp.Models.Gasto
 import com.example.gastosapp.R
 import com.example.gastosapp.viewModels.GastoViewModel
 import com.example.gastosapp.viewModels.PresupuestoViewModel
+import java.util.logging.Handler
 
 class FragmentGasto : Fragment() {
 
-    private lateinit var vm: GastoViewModel
+    private lateinit var gastoViewModel: GastoViewModel
     private lateinit var contenedorGastos: LinearLayout
     private lateinit var botonAgregar: LottieAnimationView
-
-    private lateinit var gastoViewModel: GastoViewModel
-
-    private lateinit var presupuestoViewModel: PresupuestoViewModel // Para obtener las categorías
-
+    private lateinit var presupuestoViewModel: PresupuestoViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        vm = ViewModelProvider(this)[GastoViewModel::class.java]
         gastoViewModel = ViewModelProvider(requireActivity())[GastoViewModel::class.java]
         presupuestoViewModel = ViewModelProvider(requireActivity())[PresupuestoViewModel::class.java]
     }
-
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val vista = inflater.inflate(R.layout.fragment_gasto, container, false)
@@ -39,7 +33,7 @@ class FragmentGasto : Fragment() {
         botonAgregar = vista.findViewById(R.id.agregarGasto)
 
         // Observar cambios en la lista
-        vm.gastos.observe(viewLifecycleOwner) { lista ->
+        gastoViewModel.gastos.observe(viewLifecycleOwner) { lista ->
             actualizarListaGastos(lista)
         }
 
@@ -92,7 +86,7 @@ class FragmentGasto : Fragment() {
 
         dialog.setGastoGuardadoListener(object : FragmentAgregarGasto.GastoGuardadoListener {
             override fun onGastoGuardado(gasto: Gasto) {
-                vm.agregarGasto(gasto) { exito, mensaje ->
+                gastoViewModel.agregarGasto(gasto) { exito, mensaje ->
                     val msg = if (exito) "Gasto agregado" else mensaje ?: "Error"
                     Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
                 }
@@ -144,27 +138,60 @@ class FragmentGasto : Fragment() {
     }
 
     private fun dialogEditarGasto(gasto: Gasto) {
-        FragmentAgregarGasto().apply {
-            setGastoAEditar(gasto, object : FragmentAgregarGasto.GastoEditadoListener {
+        try {
+            val dialog = FragmentAgregarGasto()
+
+            val categoriasConPresupuesto = presupuestoViewModel.presupuestos.value
+                ?.filter { it.cantidad > it.montoGastado }
+                ?.map { Categorias.getNombrePorId(it.categoriaId) }
+                ?.distinct()
+                ?: listOf()
+
+            dialog.arguments = Bundle().apply {
+                putStringArrayList("categorias_validas", ArrayList(categoriasConPresupuesto))
+            }
+
+            dialog.setGastoAEditar(gasto, object : FragmentAgregarGasto.GastoEditadoListener {
                 override fun onGastoEditado(gastoEditado: Gasto) {
-                    val pos = vm.obtenerPosicionPorId(gastoEditado.id!!)
-                    if (pos != -1) {
-                        vm.editarGasto(gastoEditado, pos) { exito, mensaje ->
-                            val msg = if (exito) "Gasto actualizado" else mensaje ?: "Error"
-                            Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
-                        }
+                    try {
+                        android.os.Handler(Looper.getMainLooper()).postDelayed({
+                            if (gastoEditado.id.isNullOrEmpty()) {
+                                Toast.makeText(requireContext(), "Error: ID nulo", Toast.LENGTH_SHORT).show()
+                                return@postDelayed
+                            }
+
+                            val pos = gastoViewModel.obtenerPosicionPorId(gastoEditado.id)
+                            if (pos != -1) {
+                                gastoViewModel.editarGasto(gastoEditado, pos) { exito, mensaje ->
+                                    val msg = if (exito) "Gasto actualizado" else mensaje ?: "Error"
+                                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
+                                }
+                            } else {
+                                Toast.makeText(requireContext(), "Error: Gasto no encontrado", Toast.LENGTH_SHORT).show()
+                            }
+                        }, 100) // ← Pequeño delay
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
             })
-        }.show(parentFragmentManager, "editar_gasto")
+
+            dialog.show(parentFragmentManager.beginTransaction(), "editar_gasto_${System.currentTimeMillis()}")
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(requireContext(), "Error al abrir editor", Toast.LENGTH_SHORT).show()
+        }
+
     }
+
 
     private fun dialogEliminar(gasto: Gasto, posicion: Int) {
         androidx.appcompat.app.AlertDialog.Builder(requireContext())
             .setTitle("Eliminar gasto")
             .setMessage("¿Eliminar '${gasto.nombre}' de $${gasto.monto}?")
             .setPositiveButton("Eliminar") { _, _ ->
-                vm.eliminarGasto(posicion) { exito, mensaje ->
+                gastoViewModel.eliminarGasto(posicion) { exito, mensaje ->
                     val msg = if (exito) "Gasto eliminado" else mensaje ?: "Error"
                     Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
                 }

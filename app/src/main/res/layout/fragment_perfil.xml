@@ -17,9 +17,9 @@
         android:layout_marginTop="40dp"
         app:cardCornerRadius="32dp"
         app:cardElevation="16dp"
-        app:strokeColor="@color/dorado"
+        app:strokeColor="@color/azulOscuro"
         app:strokeWidth="3dp"
-        app:cardBackgroundColor="@color/verde_formal"
+        app:cardBackgroundColor="#40A66E"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -41,7 +41,7 @@
                 android:src="@drawable/icon_perfil"
                 android:padding="5dp"
                 app:shapeAppearanceOverlay="@style/CircleWithBorder"
-                app:strokeColor="@color/dorado"
+                app:strokeColor="@color/cremaClaro"
                 app:strokeWidth="4dp"
                 />
 
@@ -107,7 +107,7 @@
                     android:layout_width="26dp"
                     android:layout_height="26dp"
                     android:src="@drawable/correo"
-                    app:tint="@color/verde_formal" />
+                    app:tint="@color/background_gradient_start" />
 
                 <TextView
                     android:id="@+id/p_correo"

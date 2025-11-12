@@ -1,8 +1,8 @@
-// com.example.gastosapp.Fragments.FragmentAgregarGasto.kt
 package com.example.gastosapp.Fragments
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +13,7 @@ import com.example.gastosapp.Models.Gasto
 import com.example.gastosapp.R
 import com.google.android.material.textfield.TextInputEditText
 import java.util.*
+import java.util.logging.Handler
 
 class FragmentAgregarGasto : DialogFragment() {
 
@@ -143,47 +144,56 @@ class FragmentAgregarGasto : DialogFragment() {
     private fun guardarGasto() {
         if (!validarCampos()) return
 
-        val nombre = etNombreGasto.text.toString().trim()
-        val monto = etCantidadGasto.text.toString().toDouble()
-        val descripcion = etDescripcionGasto.text.toString().trim().ifEmpty { null }
-        val categoriaNombre = etCategoriaGasto.text.toString()
-        val categoriaId = Categorias.getIdPorNombre(categoriaNombre)
+        try {
+            val nombre = etNombreGasto.text.toString().trim()
+            val monto = etCantidadGasto.text.toString().toDouble()
+            val descripcion = etDescripcionGasto.text.toString().trim().ifEmpty { null }
+            val categoriaNombre = etCategoriaGasto.text.toString()
+            val categoriaId = Categorias.getIdPorNombre(categoriaNombre)
 
-        // Validar que la categoría esté en la lista de válidas (si se proporcionó)
-        val categoriasValidas = arguments?.getStringArrayList("categorias_validas")
-        if (categoriasValidas != null && categoriaNombre !in categoriasValidas) {
-            Toast.makeText(requireContext(), "No hay presupuesto disponible para esta categoría", Toast.LENGTH_LONG).show()
-            return
+            val categoriasValidas = arguments?.getStringArrayList("categorias_validas")
+            if (categoriasValidas != null && categoriaNombre !in categoriasValidas) {
+                Toast.makeText(requireContext(), "No hay presupuesto disponible para esta categoría", Toast.LENGTH_LONG).show()
+                return
+            }
+
+            val gasto = if (gastoAEditar != null) {
+                gastoAEditar!!.copy(
+                    nombre = nombre,
+                    monto = monto,
+                    descripcion = descripcion,
+                    categoriaId = categoriaId,
+                    fecha = fechaSeleccionada
+                )
+            } else {
+                Gasto(
+                    nombre = nombre,
+                    descripcion = descripcion,
+                    monto = monto,
+                    categoriaId = categoriaId,
+                    fecha = fechaSeleccionada
+                )
+            }
+
+            val context = requireContext()
+
+            if (gastoAEditar != null) {
+                listenerEditar?.onGastoEditado(gasto)
+            } else {
+                listenerCrear?.onGastoGuardado(gasto)
+            }
+
+            dismiss()
+
+            android.os.Handler(Looper.getMainLooper()).postDelayed({
+                Toast.makeText(context, "Gasto guardado", Toast.LENGTH_SHORT).show()
+            }, 200)
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Toast.makeText(requireContext(), "Error al guardar: ${e.message}", Toast.LENGTH_SHORT).show()
         }
-
-        val gasto = if (gastoAEditar != null) {
-            gastoAEditar!!.copy(
-                nombre = nombre,
-                monto = monto,
-                descripcion = descripcion,
-                categoriaId = categoriaId,
-                fecha = fechaSeleccionada
-            )
-        } else {
-            Gasto(
-                nombre = nombre,
-                descripcion = descripcion,
-                monto = monto,
-                categoriaId = categoriaId,
-                fecha = fechaSeleccionada
-            )
-        }
-
-        if (gastoAEditar != null) {
-            listenerEditar?.onGastoEditado(gasto)
-        } else {
-            listenerCrear?.onGastoGuardado(gasto)
-        }
-        dismiss()
-        Toast.makeText(requireContext(), "Gasto guardado", Toast.LENGTH_SHORT).show()
-    }
-
-    private fun validarCampos(): Boolean {
+    }    private fun validarCampos(): Boolean {
         if (etNombreGasto.text.isNullOrBlank()) {
             etNombreGasto.error = "Nombre requerido"
             return false

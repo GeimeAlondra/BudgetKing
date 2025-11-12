@@ -1,4 +1,3 @@
-// com.example.gastosapp.viewModels.GastoViewModel.kt
 package com.example.gastosapp.viewModels
 
 import androidx.lifecycle.LiveData
@@ -258,9 +257,28 @@ class GastoViewModel : ViewModel() {
         _gastos.value = lista
     }
 
-    fun obtenerPosicionPorId(id: String): Int = _gastos.value?.indexOfFirst { it.id == id } ?: -1
+    // En GastoViewModel.kt - REEMPLAZA el método obtenerPosicionPorId
+    fun obtenerPosicionPorId(id: String?): Int {
+        try {
+            if (id.isNullOrEmpty()) {
+                println("  ID nulo o vacío en obtenerPosicionPorId")
+                return -1
+            }
 
-    override fun onCleared() {
+            val lista = _gastos.value ?: run {
+                println("  Lista de gastos vacía")
+                return -1
+            }
+
+            val posicion = lista.indexOfFirst { it.id == id }
+            println("  Buscando ID: $id - Posición encontrada: $posicion")
+
+            return posicion
+        } catch (e: Exception) {
+            println("  ERROR en obtenerPosicionPorId: ${e.message}")
+            return -1
+        }
+    }    override fun onCleared() {
         dbRef?.removeEventListener(gastosListener!!)
         super.onCleared()
     }

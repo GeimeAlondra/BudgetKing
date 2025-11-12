@@ -5,8 +5,6 @@
     <!-- Color de fondo verde -->
     <solid android:color="#006633" />
 
-    <!-- Bordes redondeados -->
-    <corners android:radius="16dp" />
 
     <padding
         android:left="8dp"
