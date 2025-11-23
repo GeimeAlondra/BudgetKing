@@ -4,12 +4,14 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
 import com.example.gastosapp.Fragments.FragmentGasto
 import com.example.gastosapp.Fragments.FragmentInicio
 import com.example.gastosapp.Fragments.FragmentPerfil
 import com.example.gastosapp.Fragments.FragmentPresupuesto
 import com.example.gastosapp.Fragments.FragmentResumen
 import com.example.gastosapp.databinding.ActivityDashboardBinding
+import com.example.gastosapp.utils.FirebaseUtils
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -19,94 +21,49 @@ private lateinit var binding: ActivityDashboardBinding
         super.onCreate(savedInstanceState)
 
         binding = ActivityDashboardBinding.inflate(layoutInflater)
-
-//        enableEdgeToEdge()
         setContentView(binding.root)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        // Fragmento por defecto
-        verFragmentoInicio()
+        if (!FirebaseUtils.isLoggedIn()) {
+            finish()
+            return
+        }
+
+        if (savedInstanceState == null) {
+            replaceFragment(FragmentInicio(), "Inicio")
+        }
 
         binding.bottomNV.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.item_inicio -> {
-                    verFragmentoInicio()
-                    true
-                }
-
-                R.id.item_gasto -> {
-                    verFragmentoGasto()
-                    true
-                }
-
-                R.id.item_presupuesto -> {
-                    verFragmentoPresupuesto()
-                    true
-                }
-
-                R.id.item_resumen -> {
-                    verFragmentoResumen()
-                    true
-                }
-
-                R.id.item_perfil -> {
-                    verFragmentoPerfil()
-                    true
-                }
-
-                else -> {
-                    true
-                }
+                R.id.item_inicio -> replaceFragment(FragmentInicio(), "Inicio")
+                R.id.item_gasto -> replaceFragment(FragmentGasto(), "Gastos")
+                R.id.item_presupuesto -> replaceFragment(FragmentPresupuesto(), "Presupuestos")
+                R.id.item_resumen -> replaceFragment(FragmentResumen(), "Resumen")
+                R.id.item_perfil -> replaceFragment(FragmentPerfil(), "Perfil")
             }
+            true
         }
     }
+    private fun replaceFragment(fragment: Fragment, titulo: String) {
+        binding.tvTitulo.text = titulo
 
-    private fun verFragmentoInicio() {
-        binding.tvTitulo.text = "Inicio"
-
-        val fragmentInicio = FragmentInicio()
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(binding.fragmentoFl.id, fragmentInicio, "Fragment Inicio")
-        fragmentTransaction.commit()
+        supportFragmentManager.beginTransaction()
+            .replace(binding.fragmentoFl.id, fragment)
+            .setReorderingAllowed(true)
+            .commit()
     }
 
-    private fun verFragmentoGasto() {
-        binding.tvTitulo.text = "Gasto"
-
-        val fragmentGasto = FragmentGasto()
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(binding.fragmentoFl.id, fragmentGasto, "Fragment Gasto")
-        fragmentTransaction.commit()
-    }
-
-    private fun verFragmentoPresupuesto() {
-        binding.tvTitulo.text = "Presupuesto"
-
-        val fragmentPresupuesto = FragmentPresupuesto()
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(binding.fragmentoFl.id, fragmentPresupuesto, "Fragment Presupuesto")
-        fragmentTransaction.commit()
-    }
-
-    private fun verFragmentoResumen() {
-        binding.tvTitulo.text = "Resumen"
-
-        val fragmentResumen = FragmentResumen()
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(binding.fragmentoFl.id, fragmentResumen, "Fragment Resumen")
-        fragmentTransaction.commit()
-    }
-
-    private fun verFragmentoPerfil() {
-        binding.tvTitulo.text = "Perfil"
-
-        val fragmentPerfil = FragmentPerfil()
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(binding.fragmentoFl.id, fragmentPerfil, "Fragment Perfil")
-        fragmentTransaction.commit()
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            supportFragmentManager.popBackStack()
+        } else {
+            super.onBackPressed()  // Sale de la app si está en Inicio
+        }
     }
 }

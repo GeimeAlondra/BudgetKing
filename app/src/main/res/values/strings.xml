@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Budget King</string>
-    <string name="default_web_client_id">886705443129-1kbci3f2k4765dv4j480a5s9r5vhu8n8.apps.googleusercontent.com</string>
+    <string name="default_web_client_id">536022149594-mlgl2uo8flnli6ja6l765obld3o8jm8q.apps.googleusercontent.com</string>
 
     <!-- Fragments -->
     <string name="item_inicio">Inicio</string>

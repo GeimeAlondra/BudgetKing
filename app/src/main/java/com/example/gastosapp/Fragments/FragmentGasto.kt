@@ -1,105 +1,107 @@
 package com.example.gastosapp.Fragments
 
 import android.os.Bundle
-import android.os.Looper
-import android.view.*
-import android.widget.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import com.airbnb.lottie.LottieAnimationView
-import com.example.gastosapp.Models.Categorias
+import androidx.fragment.app.activityViewModels
+import com.example.gastosapp.Models.Categoria
 import com.example.gastosapp.Models.Gasto
 import com.example.gastosapp.R
+import com.example.gastosapp.databinding.FragmentGastoBinding
 import com.example.gastosapp.viewModels.GastoViewModel
 import com.example.gastosapp.viewModels.PresupuestoViewModel
-import java.util.logging.Handler
+import java.text.SimpleDateFormat
+import java.util.*
 
 class FragmentGasto : Fragment() {
 
-    private lateinit var gastoViewModel: GastoViewModel
-    private lateinit var contenedorGastos: LinearLayout
-    private lateinit var botonAgregar: LottieAnimationView
-    private lateinit var presupuestoViewModel: PresupuestoViewModel
+    private var _binding: FragmentGastoBinding? = null
+    private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        gastoViewModel = ViewModelProvider(requireActivity())[GastoViewModel::class.java]
-        presupuestoViewModel = ViewModelProvider(requireActivity())[PresupuestoViewModel::class.java]
+    private val gastoVM: GastoViewModel by activityViewModels()
+    private val presupuestoVM: PresupuestoViewModel by activityViewModels()
+
+    private val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentGastoBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val vista = inflater.inflate(R.layout.fragment_gasto, container, false)
-        contenedorGastos = vista.findViewById(R.id.containerGastos)
-        botonAgregar = vista.findViewById(R.id.agregarGasto)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-        // Observar cambios en la lista
-        gastoViewModel.gastos.observe(viewLifecycleOwner) { lista ->
-            actualizarListaGastos(lista)
+        gastoVM.gastos.observe(viewLifecycleOwner) { gastos ->
+            actualizarLista(gastos)
         }
 
-        botonAgregar.setOnClickListener {
-            botonAgregar.playAnimation()
-            mostrarDialogoAgregarGasto()
+        binding.agregarGasto.setOnClickListener {
+            binding.agregarGasto.playAnimation()
+            abrirDialogoAgregar()
         }
-
-        return vista
     }
 
-    private fun abrirDialogoAgregarGasto() {
-        val dialog = FragmentAgregarGasto()
-
-        // Obtener las categorías con presupuesto activo desde el PresupuestoViewModel
-        val categoriasConPresupuesto = presupuestoViewModel.presupuestos.value
-            ?.filter { it.cantidad > it.montoGastado } // Categorías con saldo restante
-            ?.map { Categorias.getNombrePorId(it.categoriaId) }
+    private fun abrirDialogoAgregar() {
+        val categoriasValidas = presupuestoVM.presupuestos.value
+            ?.filter { it.cantidad > it.montoGastado }
+            ?.map { it.categoriaNombre }
             ?.distinct()
-            ?: listOf()
+            ?: emptyList()
 
-        dialog.arguments = Bundle().apply {
-            putStringArrayList("categorias_validas", ArrayList(categoriasConPresupuesto))
-        }
-
-        dialog.setGastoGuardadoListener(object : FragmentAgregarGasto.GastoGuardadoListener {
-            override fun onGastoGuardado(gasto: Gasto) {
-                // Llamamos a la función del GastoViewModel
-                gastoViewModel.agregarGasto(gasto) { exito, mensaje ->
-                    Toast.makeText(context, mensaje, Toast.LENGTH_SHORT).show()
-                }
+        FragmentAgregarGasto().apply {
+            arguments = Bundle().apply {
+                putStringArrayList("categorias_validas", ArrayList(categoriasValidas))
             }
-        })
-        dialog.show(parentFragmentManager, "agregarGasto")
+            setOnGastoSaved { nuevoGasto ->
+                gastoVM.agregarGasto(nuevoGasto)
+                Toast.makeText(requireContext(), "Gasto agregado", Toast.LENGTH_SHORT).show()
+            }
+        }.show(parentFragmentManager, "agregar_gasto")
     }
 
-    private fun mostrarDialogoAgregarGasto() {
-        val dialog = FragmentAgregarGasto()
-
-        // Obtener las categorías con presupuesto activo
-        val categoriasConPresupuesto = presupuestoViewModel.presupuestos.value
-            ?.filter { it.cantidad > it.montoGastado } // Categorías con saldo
-            ?.map { Categorias.getNombrePorId(it.categoriaId) }
+    private fun abrirDialogoEditar(gasto: Gasto) {
+        val categoriasValidas = presupuestoVM.presupuestos.value
+            ?.filter { it.cantidad > it.montoGastado }
+            ?.map { it.categoriaNombre }
             ?.distinct()
-            ?: listOf()
+            ?: emptyList()
 
-        dialog.arguments = Bundle().apply {
-            putStringArrayList("categorias_validas", ArrayList(categoriasConPresupuesto))
-        }
-
-        dialog.setGastoGuardadoListener(object : FragmentAgregarGasto.GastoGuardadoListener {
-            override fun onGastoGuardado(gasto: Gasto) {
-                gastoViewModel.agregarGasto(gasto) { exito, mensaje ->
-                    val msg = if (exito) "Gasto agregado" else mensaje ?: "Error"
-                    Toast.makeText(requireContext(), msg, Toast.LENGTH_LONG).show()
-                }
+        FragmentAgregarGasto().apply {
+            arguments = Bundle().apply {
+                putStringArrayList("categorias_validas", ArrayList(categoriasValidas))
             }
-        })
-        dialog.show(parentFragmentManager, "agregar_gasto")
+            editarGasto(gasto) { gastoEditado ->
+                // ← AHORA PASAMOS LOS DOS PARÁMETROS
+                gastoVM.editarGasto(gastoEditado, gasto)  // gastoOriginal = gasto actual
+                Toast.makeText(requireContext(), "Gasto actualizado", Toast.LENGTH_SHORT).show()
+            }
+        }.show(parentFragmentManager, "editar_gasto")
     }
 
-    private fun actualizarListaGastos(lista: List<Gasto>) {
-        contenedorGastos.removeAllViews()
+    private fun confirmarEliminar(gasto: Gasto) {
+        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+            .setTitle("Eliminar gasto")
+            .setMessage("¿Eliminar '${gasto.nombre}' de $${gasto.monto}?")
+            .setPositiveButton("Eliminar") { _, _ ->
+                gastoVM.eliminarGasto(gasto)
+                Toast.makeText(requireContext(), "Gasto eliminado", Toast.LENGTH_SHORT).show()
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
 
-        if (lista.isEmpty()) {
-            contenedorGastos.addView(TextView(context).apply {
+    private fun actualizarLista(gastos: List<Gasto>) {
+        binding.containerGastos.removeAllViews()
+
+        if (gastos.isEmpty()) {
+            binding.containerGastos.addView(TextView(requireContext()).apply {
                 text = "No hay gastos registrados"
                 textSize = 18f
                 gravity = Gravity.CENTER
@@ -109,94 +111,33 @@ class FragmentGasto : Fragment() {
             return
         }
 
-        lista.forEachIndexed { index, gasto ->
-            contenedorGastos.addView(crearFilaGasto(gasto, index))
+        gastos.forEach { gasto ->
+            binding.containerGastos.addView(crearItemGasto(gasto))
         }
     }
 
-    private fun crearFilaGasto(gasto: Gasto, posicion: Int): View {
-        val fila = LayoutInflater.from(context).inflate(R.layout.item_gasto, contenedorGastos, false)
+    private fun crearItemGasto(gasto: Gasto): View {
+        val item = layoutInflater.inflate(R.layout.item_gasto, binding.containerGastos, false)
 
-        // Asignar datos
-        fila.findViewById<TextView>(R.id.tvNombreGasto).text = gasto.nombre ?: "Sin nombre"
-        fila.findViewById<TextView>(R.id.tvCantidadGasto).text = "-$${String.format("%.2f", gasto.monto)}"
-        fila.findViewById<TextView>(R.id.tvDescripcion).text = gasto.descripcion ?: "Sin descripción"
-        fila.findViewById<TextView>(R.id.tvCategoria).text = Categorias.getNombrePorId(gasto.categoriaId)
-        fila.findViewById<TextView>(R.id.tvFechaGasto).text = gasto.fecha ?: "--/--/----"
+        item.findViewById<TextView>(R.id.tvNombreGasto).text = gasto.nombre
+        item.findViewById<TextView>(R.id.tvCantidadGasto).text = "-$${String.format("%.2f", gasto.monto)}"
+        item.findViewById<TextView>(R.id.tvDescripcion).text = gasto.descripcion
+        item.findViewById<TextView>(R.id.tvCategoria).text = gasto.categoriaNombre
+        item.findViewById<TextView>(R.id.tvFechaGasto).text = sdf.format(gasto.fecha)
 
-        // Botón Editar
-        fila.findViewById<View>(R.id.btnEditarGasto).setOnClickListener {
-            dialogEditarGasto(gasto)
+        item.findViewById<View>(R.id.btnEditarGasto).setOnClickListener {
+            abrirDialogoEditar(gasto)
         }
 
-        // Botón Eliminar
-        fila.findViewById<View>(R.id.btnEliminarGasto).setOnClickListener {
-            dialogEliminar(gasto, posicion)
+        item.findViewById<View>(R.id.btnEliminarGasto).setOnClickListener {
+            confirmarEliminar(gasto)
         }
 
-        return fila
+        return item
     }
 
-    private fun dialogEditarGasto(gasto: Gasto) {
-        try {
-            val dialog = FragmentAgregarGasto()
-
-            val categoriasConPresupuesto = presupuestoViewModel.presupuestos.value
-                ?.filter { it.cantidad > it.montoGastado }
-                ?.map { Categorias.getNombrePorId(it.categoriaId) }
-                ?.distinct()
-                ?: listOf()
-
-            dialog.arguments = Bundle().apply {
-                putStringArrayList("categorias_validas", ArrayList(categoriasConPresupuesto))
-            }
-
-            dialog.setGastoAEditar(gasto, object : FragmentAgregarGasto.GastoEditadoListener {
-                override fun onGastoEditado(gastoEditado: Gasto) {
-                    try {
-                        android.os.Handler(Looper.getMainLooper()).postDelayed({
-                            if (gastoEditado.id.isNullOrEmpty()) {
-                                Toast.makeText(requireContext(), "Error: ID nulo", Toast.LENGTH_SHORT).show()
-                                return@postDelayed
-                            }
-
-                            val pos = gastoViewModel.obtenerPosicionPorId(gastoEditado.id)
-                            if (pos != -1) {
-                                gastoViewModel.editarGasto(gastoEditado, pos) { exito, mensaje ->
-                                    val msg = if (exito) "Gasto actualizado" else mensaje ?: "Error"
-                                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-                                }
-                            } else {
-                                Toast.makeText(requireContext(), "Error: Gasto no encontrado", Toast.LENGTH_SHORT).show()
-                            }
-                        }, 100) // ← Pequeño delay
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                    }
-                }
-            })
-
-            dialog.show(parentFragmentManager.beginTransaction(), "editar_gasto_${System.currentTimeMillis()}")
-
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Toast.makeText(requireContext(), "Error al abrir editor", Toast.LENGTH_SHORT).show()
-        }
-
-    }
-
-
-    private fun dialogEliminar(gasto: Gasto, posicion: Int) {
-        androidx.appcompat.app.AlertDialog.Builder(requireContext())
-            .setTitle("Eliminar gasto")
-            .setMessage("¿Eliminar '${gasto.nombre}' de $${gasto.monto}?")
-            .setPositiveButton("Eliminar") { _, _ ->
-                gastoViewModel.eliminarGasto(posicion) { exito, mensaje ->
-                    val msg = if (exito) "Gasto eliminado" else mensaje ?: "Error"
-                    Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-                }
-            }
-            .setNegativeButton("Cancelar", null)
-            .show()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

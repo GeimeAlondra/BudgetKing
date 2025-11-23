@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="BarChartView">
+        <attr name="barCornerRadius" format="dimension" />
+        <attr name="showGrid" format="boolean" />
+        <attr name="labelTextSize" format="dimension" />
+        <attr name="valueTextSize" format="dimension" />
+        <attr name="gridLinesCount" format="integer" />
+    </declare-styleable>
+</resources>

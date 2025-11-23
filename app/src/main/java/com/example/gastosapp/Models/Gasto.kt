@@ -1,21 +1,14 @@
 package com.example.gastosapp.Models
 
-data class Gasto(
-    var id: String? = null,
-    var nombre: String? = null,
-    var descripcion: String? = null,
-    var monto: Double = 0.0,
-    var categoriaId: Int = 9,
-    var fecha: String? = null,
-    var timestamp: Long = 0L
-) {
-    constructor() : this(null, null, null, 0.0, 9, null, 0L)
+import com.google.firebase.firestore.ServerTimestamp
+import java.util.Date
 
-    constructor(
-        nombre: String?,
-        descripcion: String?,
-        monto: Double,
-        categoriaId: Int,
-        fecha: String?
-    ) : this(null, nombre, descripcion, monto, categoriaId, fecha, System.currentTimeMillis())
-}
+data class Gasto(
+    val id: String = "",
+    val nombre: String = "",
+    val descripcion: String = "",
+    val monto: Double = 0.0,
+    val categoriaNombre: String = "Otros",
+    val fecha: Date = Date(),
+    @ServerTimestamp val timestamp: Date? = null
+)
