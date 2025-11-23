@@ -45,6 +45,8 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+
         if (FirebaseUtils.isLoggedIn()) {
             irDashboard()
             return

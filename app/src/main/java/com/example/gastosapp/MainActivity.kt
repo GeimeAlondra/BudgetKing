@@ -32,6 +32,8 @@ class MainActivity : AppCompatActivity() {
 //        enableEdgeToEdge()
         setContentView(binding.root)
 
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+
         firebaseAuth = FirebaseAuth.getInstance()
         if (firebaseAuth.currentUser != null){
             irInicioActivity()
@@ -63,7 +65,6 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(applicationContext, RegisterActivity::class.java))
 //            finish()
         }
-
     }
 
     private fun abrirCard() {
