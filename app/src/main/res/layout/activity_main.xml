@@ -34,15 +34,15 @@
             android:layout_height="200dp"
             android:clickable="true"
             android:focusable="true"
-            app:lottie_rawRes="@raw/icon_main"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:lottie_autoPlay="true"
             app:lottie_loop="false"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
 
 
-            />
+            app:lottie_rawRes="@raw/icon_main" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/CardViewMain"

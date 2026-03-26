@@ -1,13 +1,11 @@
 package com.example.gastosapp.Fragments
 
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.gastosapp.Models.Categoria
@@ -17,6 +15,7 @@ import com.example.gastosapp.R
 import com.example.gastosapp.databinding.FragmentResumenBinding
 import com.example.gastosapp.viewModels.GastoViewModel
 import com.example.gastosapp.viewModels.PresupuestoViewModel
+import com.example.gastosapp.viewModels.ResumenViewModel
 import com.example.gastosapp.views.BarChartView
 import java.text.SimpleDateFormat
 import java.util.*
@@ -28,9 +27,14 @@ class FragmentResumen : Fragment() {
 
     private val gastoVM: GastoViewModel by activityViewModels()
     private val presupuestoVM: PresupuestoViewModel by activityViewModels()
+    private val resumenVM: ResumenViewModel by activityViewModels()
 
     private val sdfDia = SimpleDateFormat("EEE", Locale.getDefault())
     private val sdfMes = SimpleDateFormat("MMM", Locale.getDefault())
+
+    // Control para no guardar demasiado seguido
+    private var ultimoGuardado = 0L
+    private val debounceTime = 2500L
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentResumenBinding.inflate(inflater, container, false)
@@ -42,11 +46,33 @@ class FragmentResumen : Fragment() {
 
         gastoVM.gastos.observe(viewLifecycleOwner) { gastos ->
             actualizarTodo(gastos)
+            guardarResumenAutomatico()
         }
 
-        presupuestoVM.presupuestos.observe(viewLifecycleOwner) { presupuestos ->
-            calcularTotales(presupuestos)
+        presupuestoVM.presupuestos.observe(viewLifecycleOwner) {
+            calcularTotales(it)
+            guardarResumenAutomatico()
         }
+    }
+
+    private fun guardarResumenAutomatico() {
+        val ahora = System.currentTimeMillis()
+        if (ahora - ultimoGuardado < debounceTime) return
+
+        val gastos = gastoVM.gastos.value ?: emptyList()
+        val presupuestos = presupuestoVM.presupuestos.value ?: emptyList()
+
+        if (gastos.isEmpty() && presupuestos.isEmpty()) return
+
+        val totalGastado = gastos.sumOf { it.monto }
+        val montoInicial = presupuestos.sumOf { it.cantidad }
+
+        resumenVM.actualizarResumenActual(
+            totalGastado = totalGastado,
+            montoInicial = montoInicial
+        )
+
+        ultimoGuardado = ahora
     }
 
     private fun actualizarTodo(gastos: List<Gasto>) {
@@ -68,19 +94,12 @@ class FragmentResumen : Fragment() {
         val total = gastos.sumOf { it.monto }.coerceAtLeast(1.0)
 
         if (porCategoria.isEmpty()) {
-            binding.containerCategorias.addView(TextView(requireContext()).apply {
-                text = "No hay gastos registrados"
-                textSize = 16f
-                gravity = Gravity.CENTER
-                setPadding(0, 100, 0, 100)
-                setTextColor(ContextCompat.getColor(requireContext(), android.R.color.darker_gray))
-            })
             return
         }
 
         porCategoria.entries.sortedByDescending { it.value }.forEach { (nombreCat, monto) ->
             val item = layoutInflater.inflate(R.layout.item_categorias, binding.containerCategorias, false)
-            item.findViewById<TextView>(R.id.tvNombreCategoria).text = nombreCat  // ← String directo
+            item.findViewById<TextView>(R.id.tvNombreCategoria).text = nombreCat
             item.findViewById<TextView>(R.id.tvMontoCategoria).text = String.format("$%.2f", monto)
 
             val progress = item.findViewById<View>(R.id.progressBarCategoria)
