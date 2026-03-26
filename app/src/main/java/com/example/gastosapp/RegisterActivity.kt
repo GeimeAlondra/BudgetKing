@@ -40,19 +40,6 @@ class RegisterActivity : AppCompatActivity() {
         binding.registerGoogle.setOnClickListener { iniciarGoogleSignIn() }
     }
 
-    private fun setupGoogleSignIn() {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
-    }
-
-    private fun iniciarGoogleSignIn() {
-        googleSignInClient.signOut()
-        googleLauncher.launch(googleSignInClient.signInIntent)
-    }
-
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         FirebaseUtils.auth.signInWithCredential(credential)
@@ -62,6 +49,14 @@ class RegisterActivity : AppCompatActivity() {
             .addOnFailureListener {
                 Toast.makeText(this, "Error autenticación: ${it.message}", Toast.LENGTH_LONG).show()
             }
+    }
+
+    private fun setupGoogleSignIn() {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
     }
 
     private fun registrarConEmail() {
@@ -86,6 +81,11 @@ class RegisterActivity : AppCompatActivity() {
             .addOnFailureListener {
                 Toast.makeText(this, "Error registro: ${it.message}", Toast.LENGTH_LONG).show()
             }
+    }
+
+    private fun iniciarGoogleSignIn() {
+        googleSignInClient.signOut()
+        googleLauncher.launch(googleSignInClient.signInIntent)
     }
 
     private fun crearDocumentoUsuarioSiNoExiste(nombreGoogle: String? = null) {
