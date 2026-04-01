@@ -8,59 +8,35 @@ import com.example.gastosapp.utils.FirebaseUtils
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import java.util.Date
 
 class ResumenViewModel : ViewModel() {
 
     private val db = FirebaseFirestore.getInstance()
 
-    private val uid: String
-        get() = FirebaseUtils.uid() ?: ""
+    fun recalcularYGuardar(totalGastado: Double, montoInicial: Double) {
+        val uid = FirebaseUtils.uid()
+        if (uid.isNullOrEmpty()) {
+            Log.w("ResumenVM", "UID vacío, se omite el guardado")
+            return
+        }
 
-    fun actualizarResumenActual(
-        totalGastado: Double,
-        montoInicial: Double
-    ) {
+        val resumen = Resumen(
+            id_usuario = uid,
+            monto_inicial = montoInicial,
+            total_gastado = totalGastado,
+            total_disponible = montoInicial - totalGastado
+        )
+
         viewModelScope.launch {
             try {
-                val totalGeneral = montoInicial - totalGastado
-
-                val resumen = Resumen(
-                    id = "actual",
-                    id_usuario = uid,
-                    total_general = totalGeneral,
-                    monto_inicial = montoInicial,
-                    total_gastado = totalGastado,
-                    fecha_actualizacion = Date()
-                )
-
                 db.collection("resumenes")
                     .document(uid)
-                    .collection("mis_resumenes")
-                    .document("actual")
                     .set(resumen)
                     .await()
-
-                Log.d("ResumenVM", "Resumen actual actualizado | Gastado: $$totalGastado | Inicial: $$montoInicial")
+                Log.d("ResumenVM", "Guardado | Inicial: $montoInicial | Gastado: $totalGastado")
             } catch (e: Exception) {
-                Log.e("ResumenVM", "Error al actualizar resumen actual", e)
+                Log.e("ResumenVM", "Error al guardar", e)
             }
-        }
-    }
-
-    suspend fun getResumenActual(): Resumen? {
-        return try {
-            val doc = db.collection("resumenes")
-                .document(uid)
-                .collection("mis_resumenes")
-                .document("actual")
-                .get()
-                .await()
-
-            doc.toObject(Resumen::class.java)
-        } catch (e: Exception) {
-            Log.e("ResumenVM", "Error obteniendo resumen actual", e)
-            null
         }
     }
 }

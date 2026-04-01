@@ -1,6 +1,8 @@
 package com.example.gastosapp
 
 import android.os.Bundle
+import android.util.Log
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -12,10 +14,18 @@ import com.example.gastosapp.Fragments.FragmentPresupuesto
 import com.example.gastosapp.Fragments.FragmentResumen
 import com.example.gastosapp.databinding.ActivityDashboardBinding
 import com.example.gastosapp.utils.FirebaseUtils
+import com.example.gastosapp.viewModels.GastoViewModel
+import com.example.gastosapp.viewModels.PresupuestoViewModel
+import com.example.gastosapp.viewModels.ResumenViewModel
 
 class DashboardActivity : AppCompatActivity() {
 
-private lateinit var binding: ActivityDashboardBinding
+    private lateinit var binding: ActivityDashboardBinding
+
+    // viewModels() en la Activity es la misma instancia que activityViewModels() en los Fragments
+    private val gastoVM: GastoViewModel by viewModels()
+    private val presupuestoVM: PresupuestoViewModel by viewModels()
+    private val resumenVM: ResumenViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +45,18 @@ private lateinit var binding: ActivityDashboardBinding
             return
         }
 
+        // Cada vez que Firestore notifica un cambio en gastos, recalculamos el resumen
+        gastoVM.onGastosActualizados = { totalGastado ->
+            val montoInicial = presupuestoVM.presupuestos.value?.sumOf { it.cantidad } ?: 0.0
+            resumenVM.recalcularYGuardar(totalGastado, montoInicial)
+        }
+
+        // Cada vez que Firestore notifica un cambio en presupuestos, recalculamos el resumen
+        presupuestoVM.onPresupuestosActualizados = { montoInicial ->
+            val totalGastado = gastoVM.gastos.value?.sumOf { it.monto } ?: 0.0
+            resumenVM.recalcularYGuardar(totalGastado, montoInicial)
+        }
+
         if (savedInstanceState == null) {
             replaceFragment(FragmentInicio(), "Inicio")
         }
@@ -50,9 +72,9 @@ private lateinit var binding: ActivityDashboardBinding
             true
         }
     }
+
     private fun replaceFragment(fragment: Fragment, titulo: String) {
         binding.tvTitulo.text = titulo
-
         supportFragmentManager.beginTransaction()
             .replace(binding.fragmentoFl.id, fragment)
             .setReorderingAllowed(true)
@@ -63,7 +85,7 @@ private lateinit var binding: ActivityDashboardBinding
         if (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStack()
         } else {
-            super.onBackPressed()  // Sale de la app si está en Inicio
+            super.onBackPressed()
         }
     }
 }

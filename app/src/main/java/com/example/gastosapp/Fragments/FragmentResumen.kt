@@ -30,11 +30,6 @@ class FragmentResumen : Fragment() {
     private val resumenVM: ResumenViewModel by activityViewModels()
 
     private val sdfDia = SimpleDateFormat("EEE", Locale.getDefault())
-    private val sdfMes = SimpleDateFormat("MMM", Locale.getDefault())
-
-    // Control para no guardar demasiado seguido
-    private var ultimoGuardado = 0L
-    private val debounceTime = 2500L
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentResumenBinding.inflate(inflater, container, false)
@@ -44,35 +39,14 @@ class FragmentResumen : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // El Fragment solo observa y muestra. El guardado ya ocurrió en los ViewModels.
         gastoVM.gastos.observe(viewLifecycleOwner) { gastos ->
             actualizarTodo(gastos)
-            guardarResumenAutomatico()
         }
 
-        presupuestoVM.presupuestos.observe(viewLifecycleOwner) {
-            calcularTotales(it)
-            guardarResumenAutomatico()
+        presupuestoVM.presupuestos.observe(viewLifecycleOwner) { presupuestos ->
+            calcularTotales(presupuestos)
         }
-    }
-
-    private fun guardarResumenAutomatico() {
-        val ahora = System.currentTimeMillis()
-        if (ahora - ultimoGuardado < debounceTime) return
-
-        val gastos = gastoVM.gastos.value ?: emptyList()
-        val presupuestos = presupuestoVM.presupuestos.value ?: emptyList()
-
-        if (gastos.isEmpty() && presupuestos.isEmpty()) return
-
-        val totalGastado = gastos.sumOf { it.monto }
-        val montoInicial = presupuestos.sumOf { it.cantidad }
-
-        resumenVM.actualizarResumenActual(
-            totalGastado = totalGastado,
-            montoInicial = montoInicial
-        )
-
-        ultimoGuardado = ahora
     }
 
     private fun actualizarTodo(gastos: List<Gasto>) {
@@ -93,9 +67,7 @@ class FragmentResumen : Fragment() {
         val porCategoria = gastos.groupBy { it.categoriaNombre }.mapValues { it.value.sumOf { g -> g.monto } }
         val total = gastos.sumOf { it.monto }.coerceAtLeast(1.0)
 
-        if (porCategoria.isEmpty()) {
-            return
-        }
+        if (porCategoria.isEmpty()) return
 
         porCategoria.entries.sortedByDescending { it.value }.forEach { (nombreCat, monto) ->
             val item = layoutInflater.inflate(R.layout.item_categorias, binding.containerCategorias, false)
