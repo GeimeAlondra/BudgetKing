@@ -69,9 +69,22 @@ class RegisterActivity : AppCompatActivity() {
             Toast.makeText(this, "Complete todos los campos", Toast.LENGTH_SHORT).show()
             return
         }
-        if (pass1 != pass2) {
-            Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show()
+        if (pass1.length < 8) {
+            binding.campPassword.error = "La contraseña debe tener al menos 8 caracteres"
+            binding.campPassword.isErrorEnabled = true
             return
+        } else {
+            binding.campPassword.error = null
+            binding.campPassword.isErrorEnabled = false
+        }
+
+        if (pass1 != pass2) {
+            binding.campRPassword.error = "Las contraseñas no coinciden"
+            binding.campRPassword.isErrorEnabled = true
+            return
+        } else {
+            binding.campRPassword.error = null
+            binding.campRPassword.isErrorEnabled = false
         }
 
         FirebaseUtils.auth.createUserWithEmailAndPassword(email, pass1)

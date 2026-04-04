@@ -60,6 +60,24 @@ class FragmentGasto : Fragment() {
                 putStringArrayList("categorias_validas", ArrayList(categoriasValidas))
             }
             setOnGastoSaved { nuevoGasto ->
+                val presupuesto = presupuestoVM.presupuestos.value
+                    ?.firstOrNull { it.categoriaNombre == nuevoGasto.categoriaNombre }
+
+                if (presupuesto != null) {
+                    val disponible = presupuesto.cantidad - presupuesto.montoGastado
+                    if (nuevoGasto.monto > disponible) {
+                        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                            .setTitle("Presupuesto insuficiente")
+                            .setMessage(
+                                "El gasto de \$${String.format("%.2f", nuevoGasto.monto)} supera el saldo disponible " +
+                                        "de \$${String.format("%.2f", disponible)} en la categoría \"${nuevoGasto.categoriaNombre}\"."
+                            )
+                            .setPositiveButton("Entendido", null)
+                            .show()
+                        return@setOnGastoSaved
+                    }
+                }
+
                 gastoVM.agregarGasto(nuevoGasto)
                 Toast.makeText(requireContext(), "Gasto agregado", Toast.LENGTH_SHORT).show()
             }
@@ -78,8 +96,27 @@ class FragmentGasto : Fragment() {
                 putStringArrayList("categorias_validas", ArrayList(categoriasValidas))
             }
             editarGasto(gasto) { gastoEditado ->
-                // ← AHORA PASAMOS LOS DOS PARÁMETROS
-                gastoVM.editarGasto(gastoEditado, gasto)  // gastoOriginal = gasto actual
+                val presupuesto = presupuestoVM.presupuestos.value
+                    ?.firstOrNull { it.categoriaNombre == gastoEditado.categoriaNombre }
+
+                if (presupuesto != null) {
+                    // Si es la misma categoría, el monto original ya estaba descontado, así que lo sumamos de vuelta
+                    val montoOriginalEnEstaCategoria = if (gasto.categoriaNombre == gastoEditado.categoriaNombre) gasto.monto else 0.0
+                    val disponible = presupuesto.cantidad - presupuesto.montoGastado + montoOriginalEnEstaCategoria
+                    if (gastoEditado.monto > disponible) {
+                        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                            .setTitle("Presupuesto insuficiente")
+                            .setMessage(
+                                "El gasto de \$${String.format("%.2f", gastoEditado.monto)} supera el saldo disponible " +
+                                        "de \$${String.format("%.2f", disponible)} en la categoría \"${gastoEditado.categoriaNombre}\"."
+                            )
+                            .setPositiveButton("Entendido", null)
+                            .show()
+                        return@editarGasto
+                    }
+                }
+
+                gastoVM.editarGasto(gastoEditado, gasto)
                 Toast.makeText(requireContext(), "Gasto actualizado", Toast.LENGTH_SHORT).show()
             }
         }.show(parentFragmentManager, "editar_gasto")
