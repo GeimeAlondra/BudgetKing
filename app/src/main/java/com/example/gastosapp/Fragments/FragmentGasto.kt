@@ -103,10 +103,9 @@ class FragmentGasto : Fragment() {
         if (gastos.isEmpty()) {
             binding.containerGastos.addView(TextView(requireContext()).apply {
                 text = "No hay gastos registrados"
-                textSize = 18f
+                textSize = 16f
                 gravity = Gravity.CENTER
-                setPadding(0, 120, 0, 120)
-                setTextColor(requireContext().getColor(android.R.color.darker_gray))
+                setPadding(0, 100, 0, 100)
             })
             return
         }
