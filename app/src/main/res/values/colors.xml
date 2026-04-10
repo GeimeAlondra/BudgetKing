@@ -42,6 +42,6 @@
     <color name="text_primary">#1E293B</color>
     <color name="text_secondary">#64748B</color>
     <color name="divider">#E2E8F0</color>
-
+    <color name="warning">#FF9F1C</color>
 
 </resources>

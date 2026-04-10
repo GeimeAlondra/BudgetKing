@@ -38,8 +38,14 @@ class FragmentGasto : Fragment() {
         observarGastos()
         observarPresupuestos()
 
-        // FAB click listener
+        // CONFIGURAR CLICK DEL BOTÓN
         binding.fabAgregarGasto.setOnClickListener {
+            abrirDialogoAgregar()
+        }
+
+        // También puedes configurar el click en el LinearLayout interno
+        val linearLayout = binding.fabAgregarGasto.getChildAt(0)
+        linearLayout.setOnClickListener {
             abrirDialogoAgregar()
         }
     }
@@ -66,7 +72,6 @@ class FragmentGasto : Fragment() {
                 binding.emptyStateLayout.visibility = View.GONE
                 adapter.submitList(gastos)
 
-                // Actualizar total del mes
                 val totalMes = gastos.sumOf { it.monto }
                 binding.tvResumenMes.text = "Total del mes: $${String.format("%.2f", totalMes)}"
             }
@@ -77,7 +82,7 @@ class FragmentGasto : Fragment() {
         presupuestoVM.presupuestos.observe(viewLifecycleOwner) { presupuestos ->
             val categorias = presupuestos.map { it.categoriaNombre }.distinct()
             adapter.updateCategoriasDisponibles(categorias)
-            adapter.updatePresupuestos(presupuestos)  // NUEVO: Pasar presupuestos completos
+            adapter.updatePresupuestos(presupuestos)
         }
     }
 

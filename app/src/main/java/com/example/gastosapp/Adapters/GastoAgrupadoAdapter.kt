@@ -25,7 +25,7 @@ class GastoAgrupadoAdapter(
 
     private val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
     private val items = mutableListOf<Any>()
-    private val expandedCategories = mutableSetOf<String>()
+    private val expandedCategories = mutableSetOf<String>()  // ← EMPIEZA VACÍO
     private var todosLosGastos = listOf<Gasto>()
     private var presupuestos = listOf<Presupuesto>()
 
@@ -37,6 +37,10 @@ class GastoAgrupadoAdapter(
             notifyDataSetChanged()
             return
         }
+
+        // ELIMINAR ESTA LÍNEA - No expandir automáticamente
+        // val categoriasConGastos = gastos.map { it.categoriaNombre }.distinct()
+        // expandedCategories.addAll(categoriasConGastos)
 
         reconstruirLista()
     }
@@ -58,8 +62,9 @@ class GastoAgrupadoAdapter(
         val categoriasOrdenadas = gastosPorCategoria.keys.sorted()
 
         categoriasOrdenadas.forEach { categoria ->
-            items.add(categoria)
+            items.add(categoria)  // Agregar header
 
+            // SOLO agregar gastos si la categoría está expandida
             if (expandedCategories.contains(categoria)) {
                 val gastosCategoria = gastosPorCategoria[categoria] ?: emptyList()
                 val gastosOrdenados = gastosCategoria.sortedByDescending { it.fecha }
@@ -80,7 +85,12 @@ class GastoAgrupadoAdapter(
     }
 
     fun updateCategoriasDisponibles(categorias: List<String>) {
-        // Intencionalmente vacío - no expandir automáticamente
+        // ELIMINAR ESTO - No expandir automáticamente
+        // categorias.forEach { categoria ->
+        //     if (!expandedCategories.contains(categoria)) {
+        //         expandedCategories.add(categoria)
+        //     }
+        // }
     }
 
     override fun getItemViewType(position: Int): Int {
@@ -132,17 +142,21 @@ class GastoAgrupadoAdapter(
         private val tvPresupuestoInfo: TextView = itemView.findViewById(R.id.tvPresupuestoInfo)
 
         fun bind(categoria: String, gastos: List<Gasto>, presupuesto: Presupuesto?) {
-            tvCategoria.text = categoria
+            tvCategoria.text = categoria  // ← Quité .uppercase() para que se vea normal
             val totalGastado = gastos.sumOf { it.monto }
             tvTotalGastado.text = "-$${String.format("%.2f", totalGastado)}"
 
+            // Configurar barra de progreso si hay presupuesto
             if (presupuesto != null && presupuesto.cantidad > 0) {
                 val porcentaje = ((totalGastado / presupuesto.cantidad) * 100).toInt().coerceAtMost(100)
                 progressBar.progress = porcentaje
                 progressBar.visibility = View.VISIBLE
                 tvPresupuestoInfo.visibility = View.VISIBLE
+
+                // Mostrar info del presupuesto
                 tvPresupuestoInfo.text = "$${String.format("%.2f", totalGastado)} de $${String.format("%.2f", presupuesto.cantidad)}"
 
+                // Cambiar color si excede el presupuesto
                 if (totalGastado > presupuesto.cantidad) {
                     progressBar.progressTintList = ContextCompat.getColorStateList(itemView.context, R.color.error)
                     tvTotalGastado.setTextColor(ContextCompat.getColor(itemView.context, R.color.error))
@@ -153,6 +167,7 @@ class GastoAgrupadoAdapter(
                     tvPresupuestoInfo.setTextColor(ContextCompat.getColor(itemView.context, R.color.text_secondary))
                 }
             } else {
+                // Sin presupuesto definido
                 progressBar.visibility = View.GONE
                 tvPresupuestoInfo.visibility = View.GONE
             }
@@ -183,18 +198,14 @@ class GastoAgrupadoAdapter(
             btnEditar.setOnClickListener {
                 try {
                     (btnEditar as? com.airbnb.lottie.LottieAnimationView)?.playAnimation()
-                } catch (e: Exception) {
-                    // Ignorar
-                }
+                } catch (e: Exception) {}
                 onEditarClick(gasto)
             }
 
             btnEliminar.setOnClickListener {
                 try {
                     (btnEliminar as? com.airbnb.lottie.LottieAnimationView)?.playAnimation()
-                } catch (e: Exception) {
-                    // Ignorar
-                }
+                } catch (e: Exception) {}
                 onEliminarClick(gasto)
             }
         }
