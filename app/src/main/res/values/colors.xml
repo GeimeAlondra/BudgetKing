@@ -33,5 +33,15 @@
     <color name="background_gradient_start">#009688</color>
     <color name="background_gradient_end">#3F51B5</color>
 
-    #2E5A8A
+    <color name="primary">#2A7F6E</color>
+    <color name="primary_dark">#1C5B4F</color>
+    <color name="accent">#FF9F1C</color>
+    <color name="background">#F5F7FA</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="error">#E63946</color>
+    <color name="text_primary">#1E293B</color>
+    <color name="text_secondary">#64748B</color>
+    <color name="divider">#E2E8F0</color>
+
+
 </resources>

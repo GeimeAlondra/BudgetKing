@@ -19,14 +19,13 @@
             android:id="@+id/toolbarRL"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            app:layout_scrollFlags="scroll|enterAlways|snap"
             android:background="@color/azulOscuro">
 
             <TextView
-                android:id="@+id/tv_titulo"
+                android:id="@+id/tvTitulo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/tv_titulo"
+                android:text="Inicio"
                 android:textSize="20sp"
                 android:textStyle="bold"
                 android:textAllCaps="true"
@@ -40,9 +39,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/negro"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintBottom_toBottomOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -53,8 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="56dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <!-- BOTTOM NAVIGATION -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -73,6 +70,7 @@
             app:itemRippleColor="@color/light_green"
             app:menu="@menu/opciones_menu"
             app:labelVisibilityMode="selected" />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -35,13 +35,14 @@ class FragmentPresupuesto : Fragment() {
 
         vm.presupuestos.observe(viewLifecycleOwner) { actualizarUI(it) }
 
-        binding.agregarPresupuesto.setOnClickListener {
-            binding.agregarPresupuesto.playAnimation()
-            abrirAgregar()
-        }
+        // Si tienes un botón local, lo puedes dejar o eliminar
+        // binding.agregarPresupuesto.setOnClickListener {
+        //     binding.agregarPresupuesto.playAnimation()
+        //     abrirAgregar()
+        // }
     }
 
-    private fun abrirAgregar() {
+    fun abrirAgregar() {
         FragmentAgregarPresupuesto().apply {
             arguments = Bundle().apply {
                 putStringArrayList("categorias_ocupadas", ArrayList(obtenerCategoriasOcupadas()))

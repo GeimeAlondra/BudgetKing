@@ -1,153 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
+    android:layout_marginBottom="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    app:cardBackgroundColor="#FFFFFF"
     app:cardCornerRadius="12dp"
-    app:cardElevation="4dp"
-    app:cardBackgroundColor="#F8F9FA">
+    app:cardElevation="1dp"
+    app:strokeWidth="0dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="14dp">
 
-        <!-- Fila 1: Nombre y Cantidad -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Nombre del gasto -->
+        <TextView
+            android:id="@+id/tvNombreGasto"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:text="Nombre Gasto"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#1E293B"
+            app:layout_constraintEnd_toStartOf="@+id/tvCantidadGasto"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/tvNombreGasto"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Nombre Gasto"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="#000000" />
-
-            <TextView
-                android:id="@+id/tvCantidadGasto"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="$0.00"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#4CAF50"
-                android:background="#E8F5E8"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="4dp"
-                android:gravity="center" />
-
-        </LinearLayout>
-
-        <!-- Fila 2: Descripción-->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Cantidad (monto) -->
+        <TextView
+            android:id="@+id/tvCantidadGasto"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
+            android:text="-$0.00"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#E63946"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Descripción:"
-                    android:textSize="12sp"
-                    android:textColor="#666666" />
-
-                <TextView
-                    android:id="@+id/tvDescripcion"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Para la consulta medica"
-                    android:textSize="14sp"
-                    android:textColor="#000000" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <!-- Fila 3: Fecha y categoria-->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Fecha -->
+        <TextView
+            android:id="@+id/tvFechaGasto"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="6dp"
+            android:text="09/04/2026"
+            android:textSize="13sp"
+            android:textColor="#64748B"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvNombreGasto" />
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
+        <!-- Descripción -->
+        <TextView
+            android:id="@+id/tvDescripcion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Sin descripción"
+            android:textSize="13sp"
+            android:textColor="#64748B"
+            android:maxLines="2"
+            android:ellipsize="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvFechaGasto" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Fecha:"
-                    android:textSize="12sp"
-                    android:textColor="#666666" />
-
-                <TextView
-                    android:id="@+id/tvFechaGasto"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="01/01/2024"
-                    android:textSize="14sp"
-                    android:textColor="#000000" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Categoria:"
-                    android:textSize="12sp"
-                    android:textColor="#666666" />
-
-                <TextView
-                    android:id="@+id/tvCategoria"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Medicina"
-                    android:textSize="14sp"
-                    android:textColor="#000000" />
-
-            </LinearLayout>
-
-        </LinearLayout>
+        <!-- Categoría (oculta) -->
+        <TextView
+            android:id="@+id/tvCategoria"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
         <!-- Línea divisoria -->
         <View
-            android:layout_width="match_parent"
+            android:id="@+id/divider"
+            android:layout_width="0dp"
             android:layout_height="1dp"
-            android:background="#E0E0E0"
-            android:layout_marginTop="12dp" />
+            android:layout_marginTop="12dp"
+            android:background="#E2E8F0"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvDescripcion" />
 
-        <!-- Fila 4: Estado y acciones -->
+        <!-- Botones de acción -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:id="@+id/accionesLayout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginTop="8dp"
-            android:gravity="center_vertical">
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/divider">
 
             <TextView
                 android:id="@+id/tvEstadoGasto"
@@ -156,28 +104,29 @@
                 android:layout_weight="1"
                 android:text=""
                 android:textSize="12sp"
-                android:textColor="#4CAF50"
-                android:drawablePadding="4dp" />
+                android:textColor="#2A7F6E"
+                android:visibility="gone" />
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/btnEditarGasto"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:padding="4dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 app:lottie_rawRes="@raw/editpresupuesto"
-                android:background="?attr/selectableItemBackground"
-                android:contentDescription="Editar presupuesto"/>
+                android:contentDescription="Editar gasto" />
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/btnEliminarGasto"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginLeft="10dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="8dp"
+                android:padding="4dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
                 app:lottie_rawRes="@raw/deletepresupuesto"
-                android:background="?attr/selectableItemBackground"
-                android:contentDescription="Eliminar presupuesto" />
+                android:contentDescription="Eliminar gasto" />
 
         </LinearLayout>
 
-    </LinearLayout>
-
-</androidx.cardview.widget.CardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>
