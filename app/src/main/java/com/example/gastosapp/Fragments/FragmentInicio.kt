@@ -30,6 +30,10 @@ class FragmentInicio : Fragment() {
 
     private val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
+    // Variables para almacenar los datos actuales
+    private var gastosActuales = emptyList<Gasto>()
+    private var presupuestosActuales = emptyList<Presupuesto>()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentInicioBinding.inflate(inflater, container, false)
         return binding.root
@@ -65,18 +69,41 @@ class FragmentInicio : Fragment() {
     }
 
     private fun observarDatos() {
-        presupuestoVM.presupuestos.observe(viewLifecycleOwner) { actualizarResumen(it) }
-        gastoVM.gastos.observe(viewLifecycleOwner) { actualizarGastosRecientes(it) }
+        // Observar presupuestos
+        presupuestoVM.presupuestos.observe(viewLifecycleOwner) { presupuestos ->
+            presupuestosActuales = presupuestos
+            actualizarResumen()
+        }
+
+        // Observar gastos
+        gastoVM.gastos.observe(viewLifecycleOwner) { gastos ->
+            gastosActuales = gastos
+            actualizarGastosRecientes(gastos)
+            actualizarResumen()  // También actualizar resumen cuando cambian los gastos
+        }
     }
 
-    private fun actualizarResumen(presupuestos: List<Presupuesto>) {
-        val total = presupuestos.sumOf { it.cantidad }
-        val gastado = presupuestos.sumOf { it.montoGastado }
-        val disponible = total - gastado
+    private fun actualizarResumen() {
+        // Total de presupuesto asignado
+        val presupuestoTotal = presupuestosActuales.sumOf { it.cantidad }
 
-        binding.tvPresupuestoTotalInicio.text = String.format("$%.2f", total)
-        binding.tvGastadoTotalInicio.text = String.format("$%.2f", gastado)
-        binding.tvSaldoDisponibleInicio.text = String.format("$%.2f", disponible)
+        // Total gastado (suma de todos los gastos reales)
+        val gastadoTotal = gastosActuales.sumOf { it.monto }
+
+        // Saldo disponible
+        val saldoDisponible = presupuestoTotal - gastadoTotal
+
+        // Actualizar UI
+        binding.tvPresupuestoTotalInicio.text = String.format("$%.2f", presupuestoTotal)
+        binding.tvGastadoTotalInicio.text = String.format("$%.2f", gastadoTotal)
+        binding.tvSaldoDisponibleInicio.text = String.format("$%.2f", saldoDisponible)
+
+        // Cambiar color del saldo según sea positivo o negativo
+        if (saldoDisponible < 0) {
+            binding.tvSaldoDisponibleInicio.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.holo_red_dark))
+        } else {
+            binding.tvSaldoDisponibleInicio.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.holo_green_dark))
+        }
     }
 
     private fun actualizarGastosRecientes(gastos: List<Gasto>) {
@@ -104,7 +131,25 @@ class FragmentInicio : Fragment() {
         view.findViewById<TextView>(R.id.tvCategoriaGastoReciente).text = gasto.categoriaNombre
         view.findViewById<TextView>(R.id.tvFechaGastoReciente).text = sdf.format(gasto.fecha)
 
+        // Agregar ícono o color según categoría (opcional)
+        val colorCategoria = obtenerColorPorCategoria(gasto.categoriaNombre)
+        view.findViewById<TextView>(R.id.tvCategoriaGastoReciente).setTextColor(colorCategoria)
+
         return view
+    }
+
+    private fun obtenerColorPorCategoria(catNombre: String): Int {
+        val cat = Categoria.fromNombre(catNombre)
+        return when (cat) {
+            Categoria.ALIMENTACION -> 0xFFE57373.toInt()
+            Categoria.TRANSPORTE -> 0xFF7986CB.toInt()
+            Categoria.ENTRETENIMIENTO -> 0xFFFFB74D.toInt()
+            Categoria.SALUD -> 0xFF81C784.toInt()
+            Categoria.EDUCACION -> 0xFF9575CD.toInt()
+            Categoria.COMPRAS -> 0xFFFF8A65.toInt()
+            Categoria.HOGAR -> 0xFFA1887F.toInt()
+            Categoria.OTROS -> 0xFF90A4AE.toInt()
+        }
     }
 
     private fun crearTextoVacio(mensaje: String) = TextView(requireContext()).apply {

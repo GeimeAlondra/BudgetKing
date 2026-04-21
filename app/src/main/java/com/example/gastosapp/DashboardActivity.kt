@@ -1,17 +1,12 @@
 package com.example.gastosapp
 
 import android.os.Bundle
-import android.util.Log
-import androidx.activity.viewModels
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
-import com.example.gastosapp.Fragments.FragmentGasto
-import com.example.gastosapp.Fragments.FragmentInicio
-import com.example.gastosapp.Fragments.FragmentPerfil
-import com.example.gastosapp.Fragments.FragmentPresupuesto
-import com.example.gastosapp.Fragments.FragmentResumen
+import com.example.gastosapp.Fragments.*
 import com.example.gastosapp.databinding.ActivityDashboardBinding
 import com.example.gastosapp.utils.FirebaseUtils
 import com.example.gastosapp.viewModels.GastoViewModel
@@ -22,11 +17,6 @@ class DashboardActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDashboardBinding
 
-    // viewModels() en la Activity es la misma instancia que activityViewModels() en los Fragments
-    private val gastoVM: GastoViewModel by viewModels()
-    private val presupuestoVM: PresupuestoViewModel by viewModels()
-    private val resumenVM: ResumenViewModel by viewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -36,7 +26,7 @@ class DashboardActivity : AppCompatActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
 
@@ -58,16 +48,17 @@ class DashboardActivity : AppCompatActivity() {
         }
 
         if (savedInstanceState == null) {
-            replaceFragment(FragmentInicio(), "Inicio")
+            replaceFragment(FragmentInicio(), "INICIO")
         }
 
         binding.bottomNV.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.item_inicio -> replaceFragment(FragmentInicio(), "Inicio")
-                R.id.item_gasto -> replaceFragment(FragmentGasto(), "Gastos")
-                R.id.item_presupuesto -> replaceFragment(FragmentPresupuesto(), "Presupuestos")
-                R.id.item_resumen -> replaceFragment(FragmentResumen(), "Resumen")
-                R.id.item_perfil -> replaceFragment(FragmentPerfil(), "Perfil")
+                R.id.item_inicio -> replaceFragment(FragmentInicio(), "INICIO")
+                R.id.item_gasto -> replaceFragment(FragmentGasto(), "GASTOS")
+                R.id.item_presupuesto -> replaceFragment(FragmentPresupuesto(), "PRESUPUESTOS")
+                R.id.item_resumen -> replaceFragment(FragmentResumen(), "RESUMEN")
+                R.id.item_perfil -> replaceFragment(FragmentPerfil(), "PERFIL")
+                else -> false
             }
             true
         }

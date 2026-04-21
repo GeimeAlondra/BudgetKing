@@ -15,8 +15,6 @@ import com.example.gastosapp.R
 import com.example.gastosapp.databinding.FragmentResumenBinding
 import com.example.gastosapp.viewModels.GastoViewModel
 import com.example.gastosapp.viewModels.PresupuestoViewModel
-import com.example.gastosapp.viewModels.ResumenViewModel
-import com.example.gastosapp.views.BarChartView
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -31,6 +29,9 @@ class FragmentResumen : Fragment() {
 
     private val sdfDia = SimpleDateFormat("EEE", Locale.getDefault())
 
+    private var gastosActuales = emptyList<Gasto>()
+    private var presupuestosActuales = emptyList<Presupuesto>()
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentResumenBinding.inflate(inflater, container, false)
         return binding.root
@@ -39,26 +40,32 @@ class FragmentResumen : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // El Fragment solo observa y muestra. El guardado ya ocurrió en los ViewModels.
+        // Observar gastos
         gastoVM.gastos.observe(viewLifecycleOwner) { gastos ->
+            gastosActuales = gastos
             actualizarTodo(gastos)
+            calcularTotales()
         }
 
+        // Observar presupuestos
         presupuestoVM.presupuestos.observe(viewLifecycleOwner) { presupuestos ->
-            calcularTotales(presupuestos)
+            presupuestosActuales = presupuestos
+            calcularTotales()
         }
+
+        setupChartButtons()
     }
 
     private fun actualizarTodo(gastos: List<Gasto>) {
         actualizarResumenSemanal(gastos)
         actualizarResumenCategorias(gastos)
-        actualizarGraficas(gastos)
     }
 
     private fun actualizarResumenSemanal(gastos: List<Gasto>) {
         val limite = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -7) }.time
         val semana = gastos.filter { it.fecha.after(limite) || sameDay(it.fecha, limite) }
-        binding.tvGastosSemana.text = String.format("$%.2f", semana.sumOf { it.monto })
+        val totalSemana = semana.sumOf { it.monto }
+        binding.tvGastosSemana.text = String.format("$%.2f", totalSemana)
     }
 
     private fun actualizarResumenCategorias(gastos: List<Gasto>) {
@@ -98,75 +105,55 @@ class FragmentResumen : Fragment() {
         }
     }
 
-    private fun calcularTotales(presupuestos: List<Presupuesto>) {
-        val total = presupuestos.sumOf { it.cantidad }
-        val gastado = presupuestos.sumOf { it.montoGastado }
-        binding.tvPresupuestoTotal.text = String.format("$%.2f", total)
-        binding.tvGastadoTotal.text = String.format("$%.2f", gastado)
-        binding.tvTotalActivos.text = String.format("$%.2f", total - gastado)
-    }
+    private fun calcularTotales() {
+        // Total de presupuesto (suma de todas las cantidades asignadas)
+        val presupuestoTotal = presupuestosActuales.sumOf { it.cantidad }
 
-    private fun actualizarGraficas(gastos: List<Gasto>) {
-        actualizarDiaria(gastos)
-        actualizarSemanal(gastos)
-        actualizarMensual(gastos)
-    }
+        // Total gastado (suma de todos los gastos registrados)
+        val gastadoTotal = gastosActuales.sumOf { it.monto }
 
-    private fun actualizarDiaria(gastos: List<Gasto>) {
-        val hoy = Calendar.getInstance()
-        val inicio = hoy.clone() as Calendar
-        inicio.add(Calendar.DAY_OF_YEAR, -6)
+        // Saldo disponible
+        val saldoDisponible = presupuestoTotal - gastadoTotal
 
-        val datos = mutableListOf<BarChartView.BarData>()
-        for (i in 0..6) {
-            val dia = inicio.clone() as Calendar
-            dia.add(Calendar.DAY_OF_YEAR, i)
-            val montoDia = gastos.filter { sameDay(it.fecha, dia.time) }.sumOf { it.monto }
-            val label = sdfDia.format(dia.time).take(3)
-            datos.add(BarChartView.BarData(label, montoDia.toFloat()))
+        // Actualizar UI
+        binding.tvPresupuestoTotal.text = String.format("$%.2f", presupuestoTotal)
+        binding.tvGastadoTotal.text = String.format("$%.2f", gastadoTotal)
+        binding.tvTotalActivos.text = String.format("$%.2f", saldoDisponible)
+
+        // Cambiar color del saldo según sea positivo o negativo
+        if (saldoDisponible < 0) {
+            binding.tvTotalActivos.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.holo_red_dark))
+        } else {
+            binding.tvTotalActivos.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.holo_green_dark))
         }
-        binding.chartDiario.setData(datos)
-    }
-
-    private fun actualizarSemanal(gastos: List<Gasto>) {
-        val datos = mutableListOf<BarChartView.BarData>()
-        val hoy = Calendar.getInstance()
-
-        for (i in 0..15) {
-            val cal = hoy.clone() as Calendar
-            cal.add(Calendar.WEEK_OF_YEAR, -i)
-            cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY)
-            val inicioSemana = cal.time
-            cal.add(Calendar.DAY_OF_YEAR, 6)
-            val finSemana = cal.time
-
-            val monto = gastos.filter { it.fecha in inicioSemana..finSemana }.sumOf { it.monto }
-            datos.add(BarChartView.BarData("S${cal.get(Calendar.WEEK_OF_YEAR)}", monto.toFloat()))
-        }
-        binding.chartSemanal.setData(datos.reversed())
-    }
-
-    private fun actualizarMensual(gastos: List<Gasto>) {
-        val meses = listOf("Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic")
-        val cal = Calendar.getInstance()
-
-        val datos = meses.mapIndexed { index, _ ->
-            cal.set(Calendar.MONTH, index)
-            val inicioMes = cal.clone() as Calendar
-            inicioMes.set(Calendar.DAY_OF_MONTH, 1)
-            val finMes = inicioMes.clone() as Calendar
-            finMes.add(Calendar.MONTH, 1)
-            finMes.add(Calendar.DAY_OF_YEAR, -1)
-
-            val monto = gastos.filter { it.fecha in inicioMes.time..finMes.time }.sumOf { it.monto }
-            BarChartView.BarData(meses[index], monto.toFloat())
-        }
-        binding.chartMensual.setData(datos)
     }
 
     private fun sameDay(d1: Date, d2: Date): Boolean {
         val fmt = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
         return fmt.format(d1) == fmt.format(d2)
+    }
+
+    private fun setupChartButtons() {
+        binding.btnGraficaDiaria.setOnClickListener {
+            if (gastosActuales.isNotEmpty()) {
+                ChartDialogFragment.newInstance("diario", gastosActuales)
+                    .show(childFragmentManager, "ChartDialog")
+            }
+        }
+
+        binding.btnGraficaSemanal.setOnClickListener {
+            if (gastosActuales.isNotEmpty()) {
+                ChartDialogFragment.newInstance("semanal", gastosActuales)
+                    .show(childFragmentManager, "ChartDialog")
+            }
+        }
+
+        binding.btnGraficaMensual.setOnClickListener {
+            if (gastosActuales.isNotEmpty()) {
+                ChartDialogFragment.newInstance("mensual", gastosActuales)
+                    .show(childFragmentManager, "ChartDialog")
+            }
+        }
     }
 
     override fun onDestroyView() {

@@ -30,7 +30,7 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Total Gastado"
+                    android:text="Total Gastado Esta Semana"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="#FFFFFF"
@@ -49,6 +49,7 @@
 
         </androidx.cardview.widget.CardView>
 
+        <!-- Gastos por Categoría -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -80,6 +81,7 @@
 
         </androidx.cardview.widget.CardView>
 
+        <!-- Resumen General -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -175,143 +177,67 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- Gráfica Diaria -->
-        <androidx.cardview.widget.CardView
+        <!-- Sección de Estadísticas -->
+        <TextView
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginBottom="24dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
+            android:layout_height="wrap_content"
+            android:text=" Estadísticas"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="center" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Gastos Diarios"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="12dp"
-                    android:gravity="center" />
-
-                <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:scrollbars="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
-                        <com.example.gastosapp.views.BarChartView
-                            android:id="@+id/chartDiario"
-                            android:layout_width="1200dp"
-                            android:layout_height="match_parent" />
-
-                    </LinearLayout>
-                </HorizontalScrollView>
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <!-- Gráfica Semanal -->
-        <androidx.cardview.widget.CardView
+        <!-- Botón Diario - Outline Azul -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGraficaDiaria"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginBottom="24dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
+            android:layout_height="60dp"
+            android:text=" VER GASTOS DIARIOS"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#2196F3"
+            android:layout_marginBottom="16dp"
+            app:cornerRadius="12dp"
+            app:strokeColor="#2196F3"
+            app:strokeWidth="2dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Gastos Semanales"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="12dp"
-                    android:gravity="center" />
-
-                <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:scrollbars="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
-                        <com.example.gastosapp.views.BarChartView
-                            android:id="@+id/chartSemanal"
-                            android:layout_width="2000dp"
-                            android:layout_height="match_parent" />
-
-                    </LinearLayout>
-                </HorizontalScrollView>
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <!-- Gráfica Mensual -->
-        <androidx.cardview.widget.CardView
+        <!-- Botón Semanal - Outline Verde -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGraficaSemanal"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginBottom="24dp"
-            app:cardCornerRadius="12dp"
-            app:cardElevation="4dp">
+            android:layout_height="60dp"
+            android:text=" VER GASTOS SEMANALES"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#4CAF50"
+            android:layout_marginBottom="16dp"
+            app:cornerRadius="12dp"
+            app:strokeColor="#4CAF50"
+            app:strokeWidth="2dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Gastos Mensuales"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="12dp"
-                    android:gravity="center" />
-
-                <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:scrollbars="horizontal">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
-                        <com.example.gastosapp.views.BarChartView
-                            android:id="@+id/chartMensual"
-                            android:layout_width="1500dp"
-                            android:layout_height="match_parent" />
-
-                    </LinearLayout>
-                </HorizontalScrollView>
-
-            </LinearLayout>
-
-        </androidx.cardview.widget.CardView>
+        <!-- Botón Mensual - Outline Naranja -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGraficaMensual"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text=" VER GASTOS MENSUALES"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FF9800"
+            android:layout_marginBottom="16dp"
+            app:cornerRadius="12dp"
+            app:strokeColor="#FF9800"
+            app:strokeWidth="2dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp" />
 
     </LinearLayout>
 
