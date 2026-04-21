@@ -55,10 +55,17 @@ class FragmentInicio : Fragment() {
         }
         binding.tvSaludo.text = saludo
 
-        val nombre = FirebaseUtils.displayName()
-            ?: FirebaseUtils.email()?.substringBefore("@")
-            ?: "Usuario"
-        binding.tvNombreUsuario.text = nombre
+        val uid = FirebaseUtils.uid() ?: return
+        FirebaseUtils.db.collection("usuarios").document(uid).get()
+            .addOnSuccessListener { doc ->
+                val nombre = doc.getString("nombre")
+                    ?: FirebaseUtils.email()?.substringBefore("@")
+                    ?: "Usuario"
+                binding.tvNombreUsuario.text = nombre
+            }
+            .addOnFailureListener {
+                binding.tvNombreUsuario.text = FirebaseUtils.email()?.substringBefore("@") ?: "Usuario"
+            }
     }
 
     private fun observarDatos() {

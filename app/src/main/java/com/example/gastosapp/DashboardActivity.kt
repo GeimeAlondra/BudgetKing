@@ -9,6 +9,9 @@ import androidx.fragment.app.Fragment
 import com.example.gastosapp.Fragments.*
 import com.example.gastosapp.databinding.ActivityDashboardBinding
 import com.example.gastosapp.utils.FirebaseUtils
+import com.example.gastosapp.viewModels.GastoViewModel
+import com.example.gastosapp.viewModels.PresupuestoViewModel
+import com.example.gastosapp.viewModels.ResumenViewModel
 
 class DashboardActivity : AppCompatActivity() {
 
@@ -32,6 +35,18 @@ class DashboardActivity : AppCompatActivity() {
             return
         }
 
+        // Cada vez que Firestore notifica un cambio en gastos, recalculamos el resumen
+        gastoVM.onGastosActualizados = { totalGastado ->
+            val montoInicial = presupuestoVM.presupuestos.value?.sumOf { it.cantidad } ?: 0.0
+            resumenVM.recalcularYGuardar(totalGastado, montoInicial)
+        }
+
+        // Cada vez que Firestore notifica un cambio en presupuestos, recalculamos el resumen
+        presupuestoVM.onPresupuestosActualizados = { montoInicial ->
+            val totalGastado = gastoVM.gastos.value?.sumOf { it.monto } ?: 0.0
+            resumenVM.recalcularYGuardar(totalGastado, montoInicial)
+        }
+
         if (savedInstanceState == null) {
             replaceFragment(FragmentInicio(), "INICIO")
         }
@@ -51,7 +66,6 @@ class DashboardActivity : AppCompatActivity() {
 
     private fun replaceFragment(fragment: Fragment, titulo: String) {
         binding.tvTitulo.text = titulo
-
         supportFragmentManager.beginTransaction()
             .replace(binding.fragmentoFl.id, fragment)
             .setReorderingAllowed(true)

@@ -82,16 +82,39 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun authWithGoogle(idToken: String) {
-        Log.d("LOGIN_DEBUG", "ID Token recibido: $idToken")  // ← Para ver si llega
+        Log.d("LOGIN_DEBUG", "ID Token recibido: $idToken")
 
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         FirebaseUtils.auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    Log.d("LOGIN_DEBUG", "¡LOGIN CON GOOGLE EXITOSO! UID: ${FirebaseUtils.auth.currentUser?.uid}")
-                    irDashboard()
+                    val uid = FirebaseUtils.auth.currentUser?.uid ?: return@addOnCompleteListener
+                    Log.d("LOGIN_DEBUG", "¡LOGIN CON GOOGLE EXITOSO! UID: $uid")
+
+                    // Verificar si el usuario ya tiene documento en Firestore
+                    FirebaseUtils.db.collection("usuarios").document(uid).get()
+                        .addOnSuccessListener { doc ->
+                            if (doc.exists()) {
+                                // Usuario registrado → ir al Dashboard
+                                irDashboard()
+                            } else {
+                                // No tiene cuenta registrada → cerrar sesión y mandarlo a Registro
+                                FirebaseUtils.auth.signOut()
+                                Toast.makeText(
+                                    this,
+                                    "No tienes una cuenta. Por favor regístrate primero.",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                startActivity(Intent(this, RegisterActivity::class.java))
+                                finish()
+                            }
+                        }
+                        .addOnFailureListener {
+                            Log.e("LOGIN_DEBUG", "Error consultando Firestore", it)
+                            Toast.makeText(this, "Error al verificar la cuenta: ${it.message}", Toast.LENGTH_LONG).show()
+                            FirebaseUtils.auth.signOut()
+                        }
                 } else {
-                    // ← AQUÍ ESTÁ LA MAGIA: TE DICE EL CÓDIGO EXACTO DEL ERROR
                     val error = task.exception
                     Log.e("LOGIN_DEBUG", "FALLO EL LOGIN CON GOOGLE", error)
 

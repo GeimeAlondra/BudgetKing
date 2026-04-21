@@ -40,19 +40,6 @@ class RegisterActivity : AppCompatActivity() {
         binding.registerGoogle.setOnClickListener { iniciarGoogleSignIn() }
     }
 
-    private fun setupGoogleSignIn() {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        googleSignInClient = GoogleSignIn.getClient(this, gso)
-    }
-
-    private fun iniciarGoogleSignIn() {
-        googleSignInClient.signOut()
-        googleLauncher.launch(googleSignInClient.signInIntent)
-    }
-
     private fun firebaseAuthWithGoogle(idToken: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         FirebaseUtils.auth.signInWithCredential(credential)
@@ -62,6 +49,14 @@ class RegisterActivity : AppCompatActivity() {
             .addOnFailureListener {
                 Toast.makeText(this, "Error autenticación: ${it.message}", Toast.LENGTH_LONG).show()
             }
+    }
+
+    private fun setupGoogleSignIn() {
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build()
+        googleSignInClient = GoogleSignIn.getClient(this, gso)
     }
 
     private fun registrarConEmail() {
@@ -74,9 +69,22 @@ class RegisterActivity : AppCompatActivity() {
             Toast.makeText(this, "Complete todos los campos", Toast.LENGTH_SHORT).show()
             return
         }
-        if (pass1 != pass2) {
-            Toast.makeText(this, "Las contraseñas no coinciden", Toast.LENGTH_SHORT).show()
+        if (pass1.length < 8) {
+            binding.campPassword.error = "La contraseña debe tener al menos 8 caracteres"
+            binding.campPassword.isErrorEnabled = true
             return
+        } else {
+            binding.campPassword.error = null
+            binding.campPassword.isErrorEnabled = false
+        }
+
+        if (pass1 != pass2) {
+            binding.campRPassword.error = "Las contraseñas no coinciden"
+            binding.campRPassword.isErrorEnabled = true
+            return
+        } else {
+            binding.campRPassword.error = null
+            binding.campRPassword.isErrorEnabled = false
         }
 
         FirebaseUtils.auth.createUserWithEmailAndPassword(email, pass1)
@@ -86,6 +94,11 @@ class RegisterActivity : AppCompatActivity() {
             .addOnFailureListener {
                 Toast.makeText(this, "Error registro: ${it.message}", Toast.LENGTH_LONG).show()
             }
+    }
+
+    private fun iniciarGoogleSignIn() {
+        googleSignInClient.signOut()
+        googleLauncher.launch(googleSignInClient.signInIntent)
     }
 
     private fun crearDocumentoUsuarioSiNoExiste(nombreGoogle: String? = null) {
