@@ -19,7 +19,6 @@ class PresupuestoViewModel : ViewModel() {
     private val _presupuestos = MutableLiveData<List<Presupuesto>>(emptyList())
     val presupuestos: LiveData<List<Presupuesto>> = _presupuestos
 
-    // Callback que se llama cada vez que los presupuestos cambian
     var onPresupuestosActualizados: ((montoInicial: Double) -> Unit)? = null
 
     private val uid: String
@@ -43,8 +42,7 @@ class PresupuestoViewModel : ViewModel() {
                 val lista = snapshot?.toObjects(Presupuesto::class.java)
                     ?.filter { !esExpirado(it) } ?: emptyList()
                 _presupuestos.value = lista
-                // Notificar con el monto inicial actualizado
-                onPresupuestosActualizados?.invoke(lista.sumOf { it.cantidad })
+                onPresupuestosActualizados?.invoke(lista.sumOf { presupuesto -> presupuesto.cantidad })
             }
     }
 
@@ -70,11 +68,36 @@ class PresupuestoViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Elimina el presupuesto y en cascada todos los gastos asociados a su categoría.
+     * Primero borra los gastos de Firestore, luego borra el presupuesto.
+     */
     fun eliminarPresupuesto(presupuesto: Presupuesto) {
         viewModelScope.launch {
             try {
+                // 1. Buscar todos los gastos con la misma categoría
+                val gastosSnapshot = db.collection("gastos")
+                    .document(uid)
+                    .collection("mis_gastos")
+                    .whereEqualTo("categoriaNombre", presupuesto.categoriaNombre)
+                    .get()
+                    .await()
+
+                // 2. Eliminar cada gasto en un batch para ser eficiente
+                if (!gastosSnapshot.isEmpty) {
+                    val batch = db.batch()
+                    gastosSnapshot.documents.forEach { doc ->
+                        batch.delete(doc.reference)
+                    }
+                    batch.commit().await()
+                    Log.d("PresupuestoVM", "Eliminados ${gastosSnapshot.size()} gasto(s) en cascada de '${presupuesto.categoriaNombre}'")
+                }
+
+                // 3. Eliminar el presupuesto
                 db.collection("presupuestos").document(uid).collection("activos")
                     .document(presupuesto.id).delete().await()
+
+                Log.d("PresupuestoVM", "Presupuesto '${presupuesto.categoriaNombre}' eliminado")
             } catch (e: Exception) {
                 Log.e("PresupuestoVM", "Error al eliminar presupuesto", e)
             }

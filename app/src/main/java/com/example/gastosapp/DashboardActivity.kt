@@ -1,7 +1,7 @@
 package com.example.gastosapp
 
 import android.os.Bundle
-import android.view.View
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -16,6 +16,11 @@ import com.example.gastosapp.viewModels.ResumenViewModel
 class DashboardActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDashboardBinding
+
+    // Declaración explícita de los ViewModels como propiedades de la Activity
+    private val gastoVM: GastoViewModel by viewModels()
+    private val presupuestoVM: PresupuestoViewModel by viewModels()
+    private val resumenVM: ResumenViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,13 +42,13 @@ class DashboardActivity : AppCompatActivity() {
 
         // Cada vez que Firestore notifica un cambio en gastos, recalculamos el resumen
         gastoVM.onGastosActualizados = { totalGastado ->
-            val montoInicial = presupuestoVM.presupuestos.value?.sumOf { it.cantidad } ?: 0.0
+            val montoInicial = presupuestoVM.presupuestos.value?.sumOf { presupuesto -> presupuesto.cantidad } ?: 0.0
             resumenVM.recalcularYGuardar(totalGastado, montoInicial)
         }
 
         // Cada vez que Firestore notifica un cambio en presupuestos, recalculamos el resumen
         presupuestoVM.onPresupuestosActualizados = { montoInicial ->
-            val totalGastado = gastoVM.gastos.value?.sumOf { it.monto } ?: 0.0
+            val totalGastado = gastoVM.gastos.value?.sumOf { gasto -> gasto.monto } ?: 0.0
             resumenVM.recalcularYGuardar(totalGastado, montoInicial)
         }
 
