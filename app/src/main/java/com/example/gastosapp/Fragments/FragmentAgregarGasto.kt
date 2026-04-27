@@ -45,11 +45,26 @@ class FragmentAgregarGasto : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         configurarCategoria()
+
+        if (gastoAEditar != null) {
+            precargarGasto(gastoAEditar!!)
+        } else {
+            limpiarCampos()
+        }
+
         configurarFecha()
-        gastoAEditar?.let { precargarGasto(it) }
 
         binding.btnGuardarGasto.setOnClickListener { guardar() }
         binding.btnCancelarGasto.setOnClickListener { dismiss() }
+    }
+
+    private fun limpiarCampos() {
+        binding.etNombreGasto.setText("")
+        binding.etCantidadGasto.setText("")
+        binding.etDescripcionGasto.setText("")
+        // Resetear calendar a hoy y mostrar fecha actual
+        calendar.time = Date()
+        binding.etFechaGasto.text = sdf.format(calendar.time)
     }
 
     private fun configurarCategoria() {
@@ -59,17 +74,36 @@ class FragmentAgregarGasto : DialogFragment() {
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, categoriasValidas)
         binding.etCategoriaGasto.setAdapter(adapter)
 
-        val defecto = categoriasValidas.firstOrNull { it == "Otros" } ?: categoriasValidas.firstOrNull() ?: "Otros"
-        binding.etCategoriaGasto.setText(defecto, false)
+        // Solo asignar la categoría por defecto si no estamos editando
+        if (gastoAEditar == null) {
+            val defecto = categoriasValidas.firstOrNull { it == "Otros" } ?: categoriasValidas.firstOrNull() ?: "Otros"
+            binding.etCategoriaGasto.setText(defecto, false)
+        }
     }
 
     private fun configurarFecha() {
-        binding.etFechaGasto.text = sdf.format(Date())
         binding.btnFechaGasto.setOnClickListener {
             DatePickerDialog(
                 requireContext(),
                 { _, año, mes, dia ->
-                    calendar.set(año, mes, dia)
+                    val seleccionada = Calendar.getInstance().apply { set(año, mes, dia) }
+
+                    val hoy = Calendar.getInstance().apply {
+                        set(Calendar.HOUR_OF_DAY, 23)
+                        set(Calendar.MINUTE, 59)
+                        set(Calendar.SECOND, 59)
+                    }
+                    if (seleccionada.after(hoy)) {
+                        Toast.makeText(
+                            requireContext(),
+                            "No puedes registrar gastos en fechas futuras",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        // Restablecer al día actual
+                        calendar.time = Date()
+                    } else {
+                        calendar.set(año, mes, dia)
+                    }
                     binding.etFechaGasto.text = sdf.format(calendar.time)
                 },
                 calendar.get(Calendar.YEAR),
@@ -83,7 +117,7 @@ class FragmentAgregarGasto : DialogFragment() {
         binding.etNombreGasto.setText(gasto.nombre)
         binding.etCantidadGasto.setText(gasto.monto.toString())
         binding.etDescripcionGasto.setText(gasto.descripcion)
-        binding.etCategoriaGasto.setText(gasto.categoriaNombre, false)  // ← String
+        binding.etCategoriaGasto.setText(gasto.categoriaNombre, false)
         calendar.time = gasto.fecha
         binding.etFechaGasto.text = sdf.format(gasto.fecha)
     }
@@ -118,8 +152,12 @@ class FragmentAgregarGasto : DialogFragment() {
             binding.etNombreGasto.error = "Requerido"
             ok = false
         }
-        if (binding.etCantidadGasto.text.isNullOrBlank()) {
+        val montoStr = binding.etCantidadGasto.text.toString()
+        if (montoStr.isBlank()) {
             binding.etCantidadGasto.error = "Requerido"
+            ok = false
+        } else if (montoStr.toDoubleOrNull() == null || montoStr.toDouble() <= 0) {
+            binding.etCantidadGasto.error = "Ingresa un monto válido mayor a 0"
             ok = false
         }
         return ok

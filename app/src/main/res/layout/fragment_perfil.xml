@@ -62,15 +62,15 @@
                 android:shadowRadius="6"
                 android:layout_marginTop="20dp" />
 
-<!--            <TextView-->
-<!--                android:id="@+id/p_rol"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="@string/txt_nivel_usuario"-->
-<!--                android:textColor="#CCFFFFFF"-->
-<!--                android:textSize="15sp"-->
-<!--                android:fontFamily="sans-serif-medium"-->
-<!--                android:layout_marginTop="6dp" />-->
+            <!--            <TextView-->
+            <!--                android:id="@+id/p_rol"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:text="@string/txt_nivel_usuario"-->
+            <!--                android:textColor="#CCFFFFFF"-->
+            <!--                android:textSize="15sp"-->
+            <!--                android:fontFamily="sans-serif-medium"-->
+            <!--                android:layout_marginTop="6dp" />-->
 
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
@@ -119,6 +119,41 @@
                     android:textSize="17sp"
                     android:fontFamily="sans-serif-medium"
                     android:layout_marginStart="16dp" />
+            </LinearLayout>
+
+
+            <!-- Edición de nombre de usuario -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingVertical="10dp">
+
+                <ImageView
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:src="@android:drawable/ic_menu_edit"
+                    app:tint="@color/background_gradient_start" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Editar nombre"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="17sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:layout_marginStart="16dp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnEditarNombre"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Editar"
+                    android:textColor="@color/background_gradient_start" />
+
             </LinearLayout>
 
             <View

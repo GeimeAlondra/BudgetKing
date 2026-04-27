@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -38,12 +39,10 @@ class FragmentGasto : Fragment() {
         observarGastos()
         observarPresupuestos()
 
-        // CONFIGURAR CLICK DEL BOTÓN
         binding.fabAgregarGasto.setOnClickListener {
             abrirDialogoAgregar()
         }
 
-        // También puedes configurar el click en el LinearLayout interno
         val linearLayout = binding.fabAgregarGasto.getChildAt(0)
         linearLayout.setOnClickListener {
             abrirDialogoAgregar()
@@ -72,7 +71,7 @@ class FragmentGasto : Fragment() {
                 binding.emptyStateLayout.visibility = View.GONE
                 adapter.submitList(gastos)
 
-                val totalMes = gastos.sumOf { it.monto }
+                val totalMes = gastos.sumOf { gasto -> gasto.monto }
                 binding.tvResumenMes.text = "Total del mes: $${String.format("%.2f", totalMes)}"
             }
         }
@@ -80,31 +79,52 @@ class FragmentGasto : Fragment() {
 
     private fun observarPresupuestos() {
         presupuestoVM.presupuestos.observe(viewLifecycleOwner) { presupuestos ->
-            val categorias = presupuestos.map { it.categoriaNombre }.distinct()
+            val categorias = presupuestos.map { presupuesto -> presupuesto.categoriaNombre }.distinct()
             adapter.updateCategoriasDisponibles(categorias)
             adapter.updatePresupuestos(presupuestos)
         }
     }
 
     fun abrirDialogoAgregar() {
-        val categoriasValidas = presupuestoVM.presupuestos.value
-            ?.filter { it.cantidad > it.montoGastado }
-            ?.map { it.categoriaNombre }
-            ?.distinct()
-            ?: emptyList()
+        val presupuestosActivos = presupuestoVM.presupuestos.value ?: emptyList()
+
+        // Bloquear si no hay presupuestos creados
+        if (presupuestosActivos.isEmpty()) {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Sin presupuestos")
+                .setMessage("Debes crear al menos un presupuesto antes de registrar un gasto.")
+                .setPositiveButton("Entendido", null)
+                .show()
+            return
+        }
+
+        val categoriasValidas = presupuestosActivos
+            .filter { presupuesto -> presupuesto.cantidad > presupuesto.montoGastado }
+            .map { presupuesto -> presupuesto.categoriaNombre }
+            .distinct()
+
+        // Bloquear si todos los presupuestos están agotados
+        if (categoriasValidas.isEmpty()) {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Presupuestos agotados")
+                .setMessage("Todos tus presupuestos activos están agotados. Edita o crea un nuevo presupuesto para continuar.")
+                .setPositiveButton("Entendido", null)
+                .show()
+            return
+        }
 
         FragmentAgregarGasto().apply {
             arguments = Bundle().apply {
                 putStringArrayList("categorias_validas", ArrayList(categoriasValidas))
             }
             setOnGastoSaved { nuevoGasto ->
-                val presupuesto = presupuestoVM.presupuestos.value
-                    ?.firstOrNull { it.categoriaNombre == nuevoGasto.categoriaNombre }
+                val presupuesto = presupuestosActivos
+                    .firstOrNull { p -> p.categoriaNombre == nuevoGasto.categoriaNombre }
 
                 if (presupuesto != null) {
                     val disponible = presupuesto.cantidad - presupuesto.montoGastado
                     if (nuevoGasto.monto > disponible) {
-                        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                        AlertDialog.Builder(requireContext())
                             .setTitle("Presupuesto insuficiente")
                             .setMessage(
                                 "El gasto de \$${String.format("%.2f", nuevoGasto.monto)} supera el saldo disponible " +
@@ -124,8 +144,8 @@ class FragmentGasto : Fragment() {
 
     private fun abrirDialogoEditar(gasto: Gasto) {
         val categoriasValidas = presupuestoVM.presupuestos.value
-            ?.filter { it.cantidad > it.montoGastado }
-            ?.map { it.categoriaNombre }
+            ?.filter { presupuesto -> presupuesto.cantidad > presupuesto.montoGastado }
+            ?.map { presupuesto -> presupuesto.categoriaNombre }
             ?.distinct()
             ?: emptyList()
 
@@ -141,7 +161,7 @@ class FragmentGasto : Fragment() {
     }
 
     private fun confirmarEliminar(gasto: Gasto) {
-        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+        AlertDialog.Builder(requireContext())
             .setTitle("Eliminar gasto")
             .setMessage("¿Eliminar '${gasto.nombre}' de $${String.format("%.2f", gasto.monto)}?")
             .setPositiveButton("Eliminar") { _, _ ->

@@ -2,10 +2,14 @@ package com.example.gastosapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.util.Log
+import android.util.Patterns
+import android.view.View
+import android.widget.EditText
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.gastosapp.databinding.ActivityLoginBinding
 import com.example.gastosapp.utils.FirebaseUtils
@@ -28,6 +32,7 @@ class LoginActivity : AppCompatActivity() {
             authWithGoogle(account.idToken!!)
         } catch (e: ApiException) {
             Log.e("LOGIN_DEBUG", "ApiException código: ${e.statusCode}", e)
+            setLoading(false)
             when (e.statusCode) {
                 10 -> Toast.makeText(this, "DEVELOPER ERROR - SHA-1 NO REGISTRADO EN FIREBASE", Toast.LENGTH_LONG).show()
                 12500 -> Toast.makeText(this, "Google Sign-In cancelado o error interno", Toast.LENGTH_LONG).show()
@@ -36,6 +41,7 @@ class LoginActivity : AppCompatActivity() {
             }
         } catch (e: Exception) {
             Log.e("LOGIN_DEBUG", "Error desconocido en launcher", e)
+            setLoading(false)
             Toast.makeText(this, "Error fatal: ${e.message}", Toast.LENGTH_LONG).show()
         }
     }
@@ -57,20 +63,73 @@ class LoginActivity : AppCompatActivity() {
         binding.btnLogin.setOnClickListener {
             val email = binding.textCorreo.text.toString().trim()
             val pass = binding.textPassword.text.toString().trim()
+
             if (email.isEmpty() || pass.isEmpty()) {
                 Toast.makeText(this, "Complete los campos", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
+            if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                binding.CorreoElectronico.error = "Formato de correo inválido"
+                return@setOnClickListener
+            } else {
+                binding.CorreoElectronico.error = null
+            }
+
+            setLoading(true)
             FirebaseUtils.auth.signInWithEmailAndPassword(email, pass)
-                .addOnSuccessListener { irDashboard() }
+                .addOnSuccessListener {
+                    setLoading(false)
+                    irDashboard()
+                }
                 .addOnFailureListener {
+                    setLoading(false)
                     Toast.makeText(this, "Credenciales incorrectas", Toast.LENGTH_SHORT).show()
                 }
         }
 
-        binding.btnLoginGoogle.setOnClickListener { googleLauncher.launch(googleClient.signInIntent) }
+        binding.btnLoginGoogle.setOnClickListener {
+            setLoading(true)
+            googleLauncher.launch(googleClient.signInIntent)
+        }
+
         binding.sinCuenta.setOnClickListener { startActivity(Intent(this, RegisterActivity::class.java)) }
+        binding.tvOlvidaste.setOnClickListener { mostrarDialogoRecuperarContrasena() }
+    }
+
+    private fun setLoading(loading: Boolean) {
+        binding.progressBarLogin.visibility = if (loading) View.VISIBLE else View.GONE
+        binding.btnLogin.isEnabled = !loading
+        binding.btnLoginGoogle.isEnabled = !loading
+    }
+
+    private fun mostrarDialogoRecuperarContrasena() {
+        val input = EditText(this).apply {
+            hint = "Ingresa tu correo"
+            inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+            setPadding(48, 24, 48, 24)
+        }
+
+        AlertDialog.Builder(this)
+            .setTitle("Recuperar contraseña")
+            .setMessage("Te enviaremos un correo para restablecer tu contraseña.")
+            .setView(input)
+            .setPositiveButton("Enviar") { _, _ ->
+                val email = input.text.toString().trim()
+                if (email.isEmpty()) {
+                    Toast.makeText(this, "Ingresa tu correo", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+                FirebaseUtils.auth.sendPasswordResetEmail(email)
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "Correo enviado. Revisa tu bandeja de entrada.", Toast.LENGTH_LONG).show()
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "No se encontró una cuenta con ese correo.", Toast.LENGTH_LONG).show()
+                    }
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
     }
 
     private fun setupGoogle() {
@@ -88,49 +147,45 @@ class LoginActivity : AppCompatActivity() {
         FirebaseUtils.auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    val uid = FirebaseUtils.auth.currentUser?.uid ?: return@addOnCompleteListener
+                    val uid = FirebaseUtils.auth.currentUser?.uid ?: run {
+                        setLoading(false)
+                        return@addOnCompleteListener
+                    }
                     Log.d("LOGIN_DEBUG", "¡LOGIN CON GOOGLE EXITOSO! UID: $uid")
 
-                    // Verificar si el usuario ya tiene documento en Firestore
                     FirebaseUtils.db.collection("usuarios").document(uid).get()
                         .addOnSuccessListener { doc ->
+                            setLoading(false)
                             if (doc.exists()) {
-                                // Usuario registrado → ir al Dashboard
                                 irDashboard()
                             } else {
-                                // No tiene cuenta registrada → cerrar sesión y mandarlo a Registro
                                 FirebaseUtils.auth.signOut()
-                                Toast.makeText(
-                                    this,
-                                    "No tienes una cuenta. Por favor regístrate primero.",
-                                    Toast.LENGTH_LONG
-                                ).show()
+                                Toast.makeText(this, "No tienes una cuenta. Por favor regístrate primero.", Toast.LENGTH_LONG).show()
                                 startActivity(Intent(this, RegisterActivity::class.java))
                                 finish()
                             }
                         }
                         .addOnFailureListener {
+                            setLoading(false)
                             Log.e("LOGIN_DEBUG", "Error consultando Firestore", it)
                             Toast.makeText(this, "Error al verificar la cuenta: ${it.message}", Toast.LENGTH_LONG).show()
                             FirebaseUtils.auth.signOut()
                         }
                 } else {
+                    setLoading(false)
                     val error = task.exception
                     Log.e("LOGIN_DEBUG", "FALLO EL LOGIN CON GOOGLE", error)
 
                     when (error) {
-                        is com.google.firebase.auth.FirebaseAuthInvalidCredentialsException -> {
+                        is com.google.firebase.auth.FirebaseAuthInvalidCredentialsException ->
                             Toast.makeText(this, "Token inválido o expirado (posible SHA-1 mal)", Toast.LENGTH_LONG).show()
-                        }
                         is com.google.firebase.auth.FirebaseAuthException -> {
-                            val errorCode = error.errorCode
-                            Log.e("LOGIN_DEBUG", "ErrorCode Firebase: $errorCode")
-
-                            when (errorCode) {
+                            Log.e("LOGIN_DEBUG", "ErrorCode Firebase: ${error.errorCode}")
+                            when (error.errorCode) {
                                 "ERROR_INVALID_CREDENTIAL" -> Toast.makeText(this, "Credencial inválida - Revisa SHA-1 y webClientId", Toast.LENGTH_LONG).show()
                                 "ERROR_OPERATION_NOT_ALLOWED" -> Toast.makeText(this, "Google Sign-In NO está habilitado en Firebase Console", Toast.LENGTH_LONG).show()
                                 "ERROR_DEVELOPER_ERROR" -> Toast.makeText(this, "ERROR_DEVELOPER_ERROR - SHA-1 FALTANTE o webClientId mal", Toast.LENGTH_LONG).show()
-                                else -> Toast.makeText(this, "Error Firebase: $errorCode", Toast.LENGTH_LONG).show()
+                                else -> Toast.makeText(this, "Error Firebase: ${error.errorCode}", Toast.LENGTH_LONG).show()
                             }
                         }
                         else -> Toast.makeText(this, "Error desconocido: ${error?.message}", Toast.LENGTH_LONG).show()
