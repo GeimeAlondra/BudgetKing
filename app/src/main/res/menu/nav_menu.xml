@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_perfil"
+            android:icon="@drawable/icon_perfil"
+            android:title="Mi Perfil" />
+
+        <item
+            android:id="@+id/nav_inicio"
+            android:icon="@drawable/icon_home"
+            android:title="@string/item_inicio" />
+
+        <item
+            android:id="@+id/nav_gastos"
+            android:icon="@drawable/icon_gasto"
+            android:title="@string/item_gasto" />
+
+        <item
+            android:id="@+id/nav_presupuestos"
+            android:icon="@drawable/icon_presupuesto"
+            android:title="@string/item_presupuesto" />
+
+        <item
+            android:id="@+id/nav_resumen"
+            android:icon="@drawable/icon_resumen"
+            android:title="@string/item_resumen" />
+    </group>
+
+    <group>
+        <item
+            android:id="@+id/nav_cerrar_sesion"
+            android:icon="@drawable/exit"
+            android:title="@string/tv_cerrarSesion" />
+    </group>
+
+</menu>

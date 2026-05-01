@@ -100,6 +100,11 @@ dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
 
+    // CircleImageView
+    implementation("de.hdodenhof:circleimageview:3.1.0")
+    // Picasso ya lo tienes
+    implementation("com.squareup.picasso:picasso:2.8")
+
     // Tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
