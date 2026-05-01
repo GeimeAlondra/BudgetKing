@@ -98,6 +98,24 @@ class FragmentGasto : Fragment() {
                 putStringArrayList("categorias_validas", ArrayList(categoriasValidas))
             }
             setOnGastoSaved { nuevoGasto ->
+                val presupuesto = presupuestoVM.presupuestos.value
+                    ?.firstOrNull { it.categoriaNombre == nuevoGasto.categoriaNombre }
+
+                if (presupuesto != null) {
+                    val disponible = presupuesto.cantidad - presupuesto.montoGastado
+                    if (nuevoGasto.monto > disponible) {
+                        androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                            .setTitle("Presupuesto insuficiente")
+                            .setMessage(
+                                "El gasto de \$${String.format("%.2f", nuevoGasto.monto)} supera el saldo disponible " +
+                                        "de \$${String.format("%.2f", disponible)} en la categoría \"${nuevoGasto.categoriaNombre}\"."
+                            )
+                            .setPositiveButton("Entendido", null)
+                            .show()
+                        return@setOnGastoSaved
+                    }
+                }
+
                 gastoVM.agregarGasto(nuevoGasto)
                 Toast.makeText(requireContext(), "Gasto agregado", Toast.LENGTH_SHORT).show()
             }

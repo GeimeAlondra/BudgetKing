@@ -1,5 +1,6 @@
 package com.example.gastosapp.viewModels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,13 +10,17 @@ import com.example.gastosapp.utils.FirebaseUtils
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
-import java.util.*
+import java.util.Calendar
 
 class PresupuestoViewModel : ViewModel() {
 
     private val db = FirebaseFirestore.getInstance()
+
     private val _presupuestos = MutableLiveData<List<Presupuesto>>(emptyList())
     val presupuestos: LiveData<List<Presupuesto>> = _presupuestos
+
+    // Callback que se llama cada vez que los presupuestos cambian
+    var onPresupuestosActualizados: ((montoInicial: Double) -> Unit)? = null
 
     private val uid: String
         get() = FirebaseUtils.uid() ?: ""
@@ -27,58 +32,60 @@ class PresupuestoViewModel : ViewModel() {
     }
 
     private fun escucharPresupuestos() {
-        db.collection("presupuestos")
-            .document(uid)
-            .collection("activos")
-            .addSnapshotListener { snapshot, error ->
-                if (error != null) return@addSnapshotListener
+        if (uid.isEmpty()) return
 
-                val lista = snapshot?.toObjects(Presupuesto::class.java) ?: emptyList()
-                _presupuestos.value = lista.filter { !esExpirado(it) }
+        db.collection("presupuestos").document(uid).collection("activos")
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.e("PresupuestoVM", "Error escuchando presupuestos", error)
+                    return@addSnapshotListener
+                }
+                val lista = snapshot?.toObjects(Presupuesto::class.java)
+                    ?.filter { !esExpirado(it) } ?: emptyList()
+                _presupuestos.value = lista
+                // Notificar con el monto inicial actualizado
+                onPresupuestosActualizados?.invoke(lista.sumOf { it.cantidad })
             }
     }
 
     fun agregarPresupuesto(presupuesto: Presupuesto) {
         viewModelScope.launch {
-            val ref = db.collection("presupuestos")
-                .document(uid)
-                .collection("activos")
-                .document()
-            ref.set(presupuesto.copy(id = ref.id)).await()
+            try {
+                val ref = db.collection("presupuestos").document(uid).collection("activos").document()
+                ref.set(presupuesto.copy(id = ref.id)).await()
+            } catch (e: Exception) {
+                Log.e("PresupuestoVM", "Error al agregar presupuesto", e)
+            }
         }
     }
 
     fun editarPresupuesto(presupuesto: Presupuesto) {
         viewModelScope.launch {
-            db.collection("presupuestos")
-                .document(uid)
-                .collection("activos")
-                .document(presupuesto.id)
-                .set(presupuesto)
-                .await()
+            try {
+                db.collection("presupuestos").document(uid).collection("activos")
+                    .document(presupuesto.id).set(presupuesto).await()
+            } catch (e: Exception) {
+                Log.e("PresupuestoVM", "Error al editar presupuesto", e)
+            }
         }
     }
 
     fun eliminarPresupuesto(presupuesto: Presupuesto) {
         viewModelScope.launch {
-            db.collection("presupuestos")
-                .document(uid)
-                .collection("activos")
-                .document(presupuesto.id)
-                .delete()
-                .await()
+            try {
+                db.collection("presupuestos").document(uid).collection("activos")
+                    .document(presupuesto.id).delete().await()
+            } catch (e: Exception) {
+                Log.e("PresupuestoVM", "Error al eliminar presupuesto", e)
+            }
         }
     }
 
     private fun esExpirado(p: Presupuesto): Boolean {
         val hoy = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
+            set(Calendar.HOUR_OF_DAY, 0); set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0); set(Calendar.MILLISECOND, 0)
         }
-
-        val fechaFinal = p.fechaFinal
-        return fechaFinal.before(hoy.time)
+        return p.fechaFinal.before(hoy.time)
     }
 }

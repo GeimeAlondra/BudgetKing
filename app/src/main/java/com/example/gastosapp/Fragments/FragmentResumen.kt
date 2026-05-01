@@ -1,13 +1,11 @@
 package com.example.gastosapp.Fragments
 
 import android.os.Bundle
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.example.gastosapp.Models.Categoria
@@ -27,6 +25,7 @@ class FragmentResumen : Fragment() {
 
     private val gastoVM: GastoViewModel by activityViewModels()
     private val presupuestoVM: PresupuestoViewModel by activityViewModels()
+    private val resumenVM: ResumenViewModel by activityViewModels()
 
     private val sdfDia = SimpleDateFormat("EEE", Locale.getDefault())
 
@@ -75,16 +74,7 @@ class FragmentResumen : Fragment() {
         val porCategoria = gastos.groupBy { it.categoriaNombre }.mapValues { it.value.sumOf { g -> g.monto } }
         val total = gastos.sumOf { it.monto }.coerceAtLeast(1.0)
 
-        if (porCategoria.isEmpty()) {
-            binding.containerCategorias.addView(TextView(requireContext()).apply {
-                text = "No hay gastos registrados"
-                textSize = 16f
-                gravity = Gravity.CENTER
-                setPadding(0, 100, 0, 100)
-                setTextColor(ContextCompat.getColor(requireContext(), android.R.color.darker_gray))
-            })
-            return
-        }
+        if (porCategoria.isEmpty()) return
 
         porCategoria.entries.sortedByDescending { it.value }.forEach { (nombreCat, monto) ->
             val item = layoutInflater.inflate(R.layout.item_categorias, binding.containerCategorias, false)
