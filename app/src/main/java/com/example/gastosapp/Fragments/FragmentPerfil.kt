@@ -9,8 +9,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import com.example.gastosapp.utils.FirebaseUtils
-import com.example.gastosapp.LoginActivity
+import com.example.gastosapp.Utils.FirebaseUtils
 import com.example.gastosapp.MainActivity
 import com.example.gastosapp.R
 import com.example.gastosapp.databinding.FragmentPerfilBinding

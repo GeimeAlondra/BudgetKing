@@ -32,7 +32,7 @@
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <com.example.gastosapp.views.BarChartView
+            <com.example.gastosapp.Views.BarChartView
                 android:id="@+id/chartView"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent" />

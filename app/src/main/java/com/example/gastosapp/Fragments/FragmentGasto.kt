@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gastosapp.Adapters.GastoAgrupadoAdapter
 import com.example.gastosapp.Models.Gasto
 import com.example.gastosapp.databinding.FragmentGastoBinding
-import com.example.gastosapp.viewModels.GastoViewModel
-import com.example.gastosapp.viewModels.PresupuestoViewModel
+import com.example.gastosapp.ViewModels.GastoViewModel
+import com.example.gastosapp.ViewModels.PresupuestoViewModel
 
 class FragmentGasto : Fragment() {
 
