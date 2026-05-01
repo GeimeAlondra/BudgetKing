@@ -55,19 +55,17 @@ class FragmentInicio : Fragment() {
         }
         binding.tvSaludo.text = saludo
 
-        val uid = FirebaseUtils.uid() ?: return
-        FirebaseUtils.db.collection("usuarios").document(uid).get()
-            .addOnSuccessListener { doc ->
-                val nombre = doc.getString("nombre")
-                    ?: FirebaseUtils.email()?.substringBefore("@")
-                    ?: "Usuario"
-                binding.tvNombreUsuario.text = nombre
-            }
-            .addOnFailureListener {
-                binding.tvNombreUsuario.text = FirebaseUtils.email()?.substringBefore("@") ?: "Usuario"
-            }
+        // SOLUCIÓN: Usar el nombre del usuario de Firebase Auth directamente
+        val nombre = FirebaseUtils.displayName()
+        if (!nombre.isNullOrBlank() && nombre != "Sin nombre") {
+            // Si tiene nombre en Firebase Auth
+            binding.tvNombreUsuario.text = nombre
+        } else {
+            // Si no, usar la parte del correo antes del @
+            val correo = FirebaseUtils.email()
+            binding.tvNombreUsuario.text = correo?.substringBefore("@") ?: "Usuario"
+        }
     }
-
     private fun observarDatos() {
         // Observar presupuestos
         presupuestoVM.presupuestos.observe(viewLifecycleOwner) { presupuestos ->

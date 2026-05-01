@@ -91,8 +91,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:background="@color/azulOscuro"
-            android:paddingTop="1dp"
-            android:paddingBottom="1dp"
             app:itemIconTint="@menu/color_item_navbar"
             app:itemTextColor="@color/blanco"
             app:itemRippleColor="@color/light_green"
