@@ -8,10 +8,10 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.example.gastosapp.Fragments.*
 import com.example.gastosapp.databinding.ActivityDashboardBinding
-import com.example.gastosapp.utils.FirebaseUtils
-import com.example.gastosapp.viewModels.GastoViewModel
-import com.example.gastosapp.viewModels.PresupuestoViewModel
-import com.example.gastosapp.viewModels.ResumenViewModel
+import com.example.gastosapp.Utils.FirebaseUtils
+import com.example.gastosapp.ViewModels.GastoViewModel
+import com.example.gastosapp.ViewModels.PresupuestoViewModel
+import com.example.gastosapp.ViewModels.ResumenViewModel
 
 class DashboardActivity : AppCompatActivity() {
 

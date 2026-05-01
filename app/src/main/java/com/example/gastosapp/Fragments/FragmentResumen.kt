@@ -14,9 +14,9 @@ import com.example.gastosapp.Models.Gasto
 import com.example.gastosapp.Models.Presupuesto
 import com.example.gastosapp.R
 import com.example.gastosapp.databinding.FragmentResumenBinding
-import com.example.gastosapp.viewModels.GastoViewModel
-import com.example.gastosapp.viewModels.PresupuestoViewModel
-import com.example.gastosapp.viewModels.ResumenViewModel
+import com.example.gastosapp.ViewModels.GastoViewModel
+import com.example.gastosapp.ViewModels.PresupuestoViewModel
+import com.example.gastosapp.ViewModels.ResumenViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 

@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.gastosapp.Adapters.PresupuestoAdapter
 import com.example.gastosapp.Models.Presupuesto
 import com.example.gastosapp.databinding.FragmentPresupuestoBinding
-import com.example.gastosapp.utils.FirebaseUtils
-import com.example.gastosapp.viewModels.PresupuestoViewModel
+import com.example.gastosapp.Utils.FirebaseUtils
+import com.example.gastosapp.ViewModels.PresupuestoViewModel
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.*
