@@ -1,70 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DashboardActivity">
+    tools:context=".DashboardActivity"
+    android:background="@color/gris">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        app:elevation="0dp">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/toolbarRL"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:background="@color/azulOscuro">
-
-            <TextView
-                android:id="@+id/tvTitulo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Inicio"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textAllCaps="true"
-                android:textColor="@color/blanco"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/negro"
-                app:layout_constraintBottom_toBottomOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <!-- CONTENEDOR DE FRAGMENTOS -->
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentoFl"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="56dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
-
-    <!-- BOTTOM NAVIGATION -->
+    <!-- CONTENIDO PRINCIPAL -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/bottomNVCL"
+        android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom">
+        android:layout_height="match_parent">
 
+        <!-- TOOLBAR PERSONALIZADO -->
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            app:elevation="0dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/toolbarRL"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:background="@color/azulOscuro"
+                android:paddingStart="8dp"
+                android:paddingEnd="16dp">
+
+                <!-- Botón hamburguesa -->
+                <ImageView
+                    android:id="@+id/btnMenu"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/ic_menu"
+                    android:tint="@color/blanco"
+                    android:padding="8dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Menú"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+
+                <!-- Título -->
+                <TextView
+                    android:id="@+id/tvTitulo"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="INICIO"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/blanco"
+                    android:gravity="center"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/imgAvatar"
+                    app:layout_constraintStart_toEndOf="@+id/btnMenu"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <!-- Avatar circular -->
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/imgAvatar"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:src="@drawable/icon_perfil"
+                    android:contentDescription="Perfil"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:civ_border_width="2dp"
+                    app:civ_border_color="@color/blanco" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <!-- CONTENEDOR DE FRAGMENTOS -->
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragmentoFl"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="56dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+        <!-- BOTTOM NAVIGATION -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
             android:background="@color/azulOscuro"
+            android:paddingTop="1dp"
+            android:paddingBottom="1dp"
             app:itemIconTint="@menu/color_item_navbar"
             app:itemTextColor="@color/blanco"
             app:itemRippleColor="@color/light_green"
@@ -73,4 +101,14 @@
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <!-- NAVIGATION DRAWER -->
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigationView"
+        android:layout_width="300dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/blanco"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/nav_menu" />
+
+</androidx.drawerlayout.widget.DrawerLayout>

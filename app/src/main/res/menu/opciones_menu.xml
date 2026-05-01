@@ -24,11 +24,6 @@
         android:title="@string/item_resumen"
         android:icon="@drawable/icon_resumen"
         />
-
-    <item
-        android:id="@+id/item_perfil"
-        android:title="@string/item_perfil"
-        android:icon="@drawable/icon_perfil"
-        />
+    
 
 </menu>

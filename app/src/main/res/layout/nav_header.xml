@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="180dp"
+    android:background="@color/azulOscuro"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="16dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/imgNavHeader"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/icon_perfil"
+        app:civ_border_width="3dp"
+        app:civ_border_color="@color/blanco" />
+
+    <TextView
+        android:id="@+id/tvNavNombre"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/tv_userName"
+        android:textColor="@color/blanco"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvNavCorreo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/tv_userEmail"
+        android:textColor="#CCFFFFFF"
+        android:textSize="14sp" />
+
+</LinearLayout>
