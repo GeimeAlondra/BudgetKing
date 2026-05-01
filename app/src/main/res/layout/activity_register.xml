@@ -160,6 +160,17 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/campR_Password" />
 
+            <!-- ndicador de carga para operaciones asíncronas -->
+            <ProgressBar
+                android:id="@+id/progressBarRegister"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@+id/register_google"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_registrar" />
+
             <TextView
                 android:id="@+id/register_google"
                 android:layout_width="wrap_content"
@@ -175,8 +186,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/btn_registrar"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                />
+                app:layout_constraintBottom_toBottomOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.circularreveal.cardview.CircularRevealCardView>

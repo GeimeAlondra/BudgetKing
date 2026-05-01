@@ -1,4 +1,4 @@
-package com.example.gastosapp.utils
+package com.example.gastosapp.Utils
 
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth

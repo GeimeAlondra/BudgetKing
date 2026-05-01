@@ -2,12 +2,12 @@ package com.example.gastosapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.gastosapp.databinding.ActivityRegisterBinding
-import com.example.gastosapp.utils.FirebaseUtils
+import com.example.gastosapp.Utils.FirebaseUtils
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -18,12 +18,14 @@ class RegisterActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegisterBinding
     private lateinit var googleSignInClient: GoogleSignInClient
+
     private val googleLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
         try {
             val account = task.getResult(ApiException::class.java)
             firebaseAuthWithGoogle(account.idToken!!)
         } catch (e: Exception) {
+            setLoading(false)
             Toast.makeText(this, "Error Google: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
@@ -40,13 +42,21 @@ class RegisterActivity : AppCompatActivity() {
         binding.registerGoogle.setOnClickListener { iniciarGoogleSignIn() }
     }
 
+    private fun setLoading(loading: Boolean) {
+        binding.progressBarRegister.visibility = if (loading) View.VISIBLE else View.GONE
+        binding.btnRegistrar.isEnabled = !loading
+        binding.registerGoogle.isEnabled = !loading
+    }
+
     private fun firebaseAuthWithGoogle(idToken: String) {
+        setLoading(true)
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         FirebaseUtils.auth.signInWithCredential(credential)
             .addOnSuccessListener {
                 crearDocumentoUsuarioSiNoExiste()
             }
             .addOnFailureListener {
+                setLoading(false)
                 Toast.makeText(this, "Error autenticación: ${it.message}", Toast.LENGTH_LONG).show()
             }
     }
@@ -65,14 +75,35 @@ class RegisterActivity : AppCompatActivity() {
         val pass1 = binding.rPassword.text.toString()
         val pass2 = binding.rRPassword.text.toString()
 
-        if (nombre.isEmpty() || email.isEmpty() || pass1.isEmpty() || pass2.isEmpty()) {
-            Toast.makeText(this, "Complete todos los campos", Toast.LENGTH_SHORT).show()
-            return
+        var valid = true
+
+        if (nombre.isEmpty()) {
+            binding.campNombre.error = "El nombre es requerido"
+            valid = false
+        } else if (nombre.length < 2) {
+            binding.campNombre.error = "El nombre debe tener al menos 2 caracteres"
+            valid = false
+        } else if (nombre.length > 50) {
+            binding.campNombre.error = "El nombre no puede superar los 50 caracteres"
+            valid = false
+        } else if (!nombre.matches(Regex("^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ ]+$"))) {
+            binding.campNombre.error = "El nombre solo puede contener letras y espacios"
+            valid = false
+        } else {
+            binding.campNombre.error = null
         }
+
+        if (email.isEmpty()) {
+            binding.campCorreo.error = "El correo es requerido"
+            valid = false
+        } else {
+            binding.campCorreo.error = null
+        }
+
         if (pass1.length < 8) {
             binding.campPassword.error = "La contraseña debe tener al menos 8 caracteres"
             binding.campPassword.isErrorEnabled = true
-            return
+            valid = false
         } else {
             binding.campPassword.error = null
             binding.campPassword.isErrorEnabled = false
@@ -81,17 +112,21 @@ class RegisterActivity : AppCompatActivity() {
         if (pass1 != pass2) {
             binding.campRPassword.error = "Las contraseñas no coinciden"
             binding.campRPassword.isErrorEnabled = true
-            return
+            valid = false
         } else {
             binding.campRPassword.error = null
             binding.campRPassword.isErrorEnabled = false
         }
 
+        if (!valid) return
+
+        setLoading(true)
         FirebaseUtils.auth.createUserWithEmailAndPassword(email, pass1)
             .addOnSuccessListener {
                 crearDocumentoUsuarioSiNoExiste(nombre)
             }
             .addOnFailureListener {
+                setLoading(false)
                 Toast.makeText(this, "Error registro: ${it.message}", Toast.LENGTH_LONG).show()
             }
     }
@@ -102,7 +137,10 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun crearDocumentoUsuarioSiNoExiste(nombreGoogle: String? = null) {
-        val uid = FirebaseUtils.uid() ?: return
+        val uid = FirebaseUtils.uid() ?: run {
+            setLoading(false)
+            return
+        }
         val docRef = FirebaseUtils.db.collection("usuarios").document(uid)
 
         docRef.get().addOnSuccessListener { doc ->
@@ -114,11 +152,19 @@ class RegisterActivity : AppCompatActivity() {
                     "creadoEn" to System.currentTimeMillis()
                 )
                 docRef.set(data).addOnSuccessListener {
+                    setLoading(false)
                     irAlDashboard()
+                }.addOnFailureListener {
+                    setLoading(false)
+                    Toast.makeText(this, "Error al guardar datos: ${it.message}", Toast.LENGTH_LONG).show()
                 }
             } else {
+                setLoading(false)
                 irAlDashboard()
             }
+        }.addOnFailureListener {
+            setLoading(false)
+            Toast.makeText(this, "Error de conexión: ${it.message}", Toast.LENGTH_LONG).show()
         }
     }
 

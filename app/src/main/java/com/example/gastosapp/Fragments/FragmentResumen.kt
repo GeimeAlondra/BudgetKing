@@ -14,9 +14,9 @@ import com.example.gastosapp.Models.Gasto
 import com.example.gastosapp.Models.Presupuesto
 import com.example.gastosapp.R
 import com.example.gastosapp.databinding.FragmentResumenBinding
-import com.example.gastosapp.viewModels.GastoViewModel
-import com.example.gastosapp.viewModels.PresupuestoViewModel
-import com.example.gastosapp.viewModels.ResumenViewModel
+import com.example.gastosapp.ViewModels.GastoViewModel
+import com.example.gastosapp.ViewModels.PresupuestoViewModel
+import com.example.gastosapp.ViewModels.ResumenViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -42,20 +42,27 @@ class FragmentResumen : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Observar gastos
         gastoVM.gastos.observe(viewLifecycleOwner) { gastos ->
             gastosActuales = gastos
-            actualizarTodo(gastos)
+            actualizarVisibilidad()
+            if (gastos.isNotEmpty()) {
+                actualizarTodo(gastos)
+            }
             calcularTotales()
         }
 
-        // Observar presupuestos
         presupuestoVM.presupuestos.observe(viewLifecycleOwner) { presupuestos ->
             presupuestosActuales = presupuestos
             calcularTotales()
         }
 
         setupChartButtons()
+    }
+
+    private fun actualizarVisibilidad() {
+        val hayDatos = gastosActuales.isNotEmpty() || presupuestosActuales.isNotEmpty()
+        binding.emptyStateResumen.visibility = if (!hayDatos) View.VISIBLE else View.GONE
+        binding.scrollResumen.visibility = if (hayDatos) View.VISIBLE else View.GONE
     }
 
     private fun actualizarTodo(gastos: List<Gasto>) {
@@ -108,21 +115,14 @@ class FragmentResumen : Fragment() {
     }
 
     private fun calcularTotales() {
-        // Total de presupuesto (suma de todas las cantidades asignadas)
         val presupuestoTotal = presupuestosActuales.sumOf { it.cantidad }
-
-        // Total gastado (suma de todos los gastos registrados)
         val gastadoTotal = gastosActuales.sumOf { it.monto }
-
-        // Saldo disponible
         val saldoDisponible = presupuestoTotal - gastadoTotal
 
-        // Actualizar UI
         binding.tvPresupuestoTotal.text = String.format("$%.2f", presupuestoTotal)
         binding.tvGastadoTotal.text = String.format("$%.2f", gastadoTotal)
         binding.tvTotalActivos.text = String.format("$%.2f", saldoDisponible)
 
-        // Cambiar color del saldo según sea positivo o negativo
         if (saldoDisponible < 0) {
             binding.tvTotalActivos.setTextColor(ContextCompat.getColor(requireContext(), android.R.color.holo_red_dark))
         } else {
@@ -140,6 +140,8 @@ class FragmentResumen : Fragment() {
             if (gastosActuales.isNotEmpty()) {
                 ChartDialogFragment.newInstance("diario", gastosActuales)
                     .show(childFragmentManager, "ChartDialog")
+            } else {
+                android.widget.Toast.makeText(requireContext(), "No hay gastos para mostrar", android.widget.Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -147,6 +149,8 @@ class FragmentResumen : Fragment() {
             if (gastosActuales.isNotEmpty()) {
                 ChartDialogFragment.newInstance("semanal", gastosActuales)
                     .show(childFragmentManager, "ChartDialog")
+            } else {
+                android.widget.Toast.makeText(requireContext(), "No hay gastos para mostrar", android.widget.Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -154,6 +158,8 @@ class FragmentResumen : Fragment() {
             if (gastosActuales.isNotEmpty()) {
                 ChartDialogFragment.newInstance("mensual", gastosActuales)
                     .show(childFragmentManager, "ChartDialog")
+            } else {
+                android.widget.Toast.makeText(requireContext(), "No hay gastos para mostrar", android.widget.Toast.LENGTH_SHORT).show()
             }
         }
     }

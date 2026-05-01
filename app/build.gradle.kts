@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     id("com.google.gms.google-services")
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -16,6 +17,13 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    configurations.all {
+        resolutionStrategy {
+            force("org.jetbrains:annotations:23.0.0")
+        }
+        exclude(group = "com.intellij", module = "annotations")
     }
 
     buildTypes {
@@ -56,6 +64,14 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
 
+    // Room - base de datos local
+    implementation("androidx.room:room-runtime:2.7.0")
+    implementation("androidx.room:room-ktx:2.7.0")
+    ksp("androidx.room:room-compiler:2.7.0")
+
+    // WorkManager - sincronización en background
+    implementation("androidx.work:work-runtime-ktx:2.9.0")
+
     implementation("com.google.android.gms:play-services-auth:20.7.0")
 
     // Navigation
@@ -74,8 +90,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.5.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.6")
-//    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
-//    implementation(libs.androidx.lifecycle.viewmodel.android)
+    // implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.5.1")
+    // implementation(libs.androidx.lifecycle.viewmodel.android)
 
     // Graficos
     implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")

@@ -1,4 +1,4 @@
-package com.example.gastosapp.views
+package com.example.gastosapp.Views
 
 import android.animation.ValueAnimator
 import android.content.Context
@@ -8,7 +8,6 @@ import android.view.View
 import android.view.animation.DecelerateInterpolator
 import androidx.core.content.withStyledAttributes
 import com.example.gastosapp.R
-import kotlin.math.max
 
 class BarChartView @JvmOverloads constructor(
     context: Context,

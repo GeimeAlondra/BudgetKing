@@ -8,7 +8,7 @@ import android.widget.HorizontalScrollView
 import android.widget.TextView
 import com.example.gastosapp.Models.Gasto
 import com.example.gastosapp.R
-import com.example.gastosapp.views.BarChartView
+import com.example.gastosapp.Views.BarChartView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import java.text.SimpleDateFormat
 import java.util.*

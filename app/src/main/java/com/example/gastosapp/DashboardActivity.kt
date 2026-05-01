@@ -3,6 +3,7 @@ package com.example.gastosapp
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
@@ -16,10 +17,19 @@ import com.example.gastosapp.utils.FirebaseUtils
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.squareup.picasso.Picasso
+import com.example.gastosapp.Utils.FirebaseUtils
+import com.example.gastosapp.ViewModels.GastoViewModel
+import com.example.gastosapp.ViewModels.PresupuestoViewModel
+import com.example.gastosapp.ViewModels.ResumenViewModel
 
 class DashboardActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDashboardBinding
+
+    // Declaración explícita de los ViewModels como propiedades de la Activity
+    private val gastoVM: GastoViewModel by viewModels()
+    private val presupuestoVM: PresupuestoViewModel by viewModels()
+    private val resumenVM: ResumenViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +52,17 @@ class DashboardActivity : AppCompatActivity() {
         configurarDrawer()
         configurarToolbar()
         cargarAvatares()
+        // Cada vez que Firestore notifica un cambio en gastos, recalculamos el resumen
+        gastoVM.onGastosActualizados = { totalGastado ->
+            val montoInicial = presupuestoVM.presupuestos.value?.sumOf { presupuesto -> presupuesto.cantidad } ?: 0.0
+            resumenVM.recalcularYGuardar(totalGastado, montoInicial)
+        }
+
+        // Cada vez que Firestore notifica un cambio en presupuestos, recalculamos el resumen
+        presupuestoVM.onPresupuestosActualizados = { montoInicial ->
+            val totalGastado = gastoVM.gastos.value?.sumOf { gasto -> gasto.monto } ?: 0.0
+            resumenVM.recalcularYGuardar(totalGastado, montoInicial)
+        }
 
         if (savedInstanceState == null) {
             replaceFragment(FragmentInicio(), "INICIO")
