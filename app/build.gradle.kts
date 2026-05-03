@@ -85,6 +85,7 @@ dependencies {
     implementation("com.squareup.picasso:picasso:2.8")
     implementation ("pl.droidsonroids.gif:android-gif-drawable:1.2.29")
     implementation("com.airbnb.android:lottie:5.0.3")
+    implementation("de.hdodenhof:circleimageview:3.1.0")
 
     // Lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1")
