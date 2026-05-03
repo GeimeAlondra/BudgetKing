@@ -13,11 +13,10 @@ import com.example.gastosapp.Fragments.*
 import android.widget.ImageView
 import android.widget.TextView
 import com.example.gastosapp.databinding.ActivityDashboardBinding
-import com.example.gastosapp.utils.FirebaseUtils
+import com.example.gastosapp.Utils.FirebaseUtils
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.squareup.picasso.Picasso
-import com.example.gastosapp.Utils.FirebaseUtils
 import com.example.gastosapp.ViewModels.GastoViewModel
 import com.example.gastosapp.ViewModels.PresupuestoViewModel
 import com.example.gastosapp.ViewModels.ResumenViewModel
