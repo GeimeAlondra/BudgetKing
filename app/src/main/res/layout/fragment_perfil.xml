@@ -1,188 +1,431 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_perfil_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorSurface"
-    tools:context=".Fragments.FragmentPerfil">
+    android:background="#F5F7FA"
+    android:fillViewport="true">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/user_file"
-        android:layout_width="match_parent"
-        android:layout_height="320dp"
-        android:layout_marginHorizontal="20dp"
-        android:layout_marginTop="40dp"
-        app:cardCornerRadius="32dp"
-        app:cardElevation="16dp"
-        app:strokeColor="@color/azulOscuro"
-        app:strokeWidth="3dp"
-        app:cardBackgroundColor="#40A66E"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:paddingTop="32dp"
-            android:padding="10dp">
-
-            <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imgPerfil"
-                android:layout_width="130dp"
-                android:layout_height="130dp"
-                android:contentDescription="@string/profile_picture"
-                android:src="@drawable/icon_perfil"
-                android:padding="5dp"
-                app:shapeAppearanceOverlay="@style/CircleWithBorder"
-                app:strokeColor="@color/cremaClaro"
-                app:strokeWidth="4dp"
-                />
-
-            <TextView
-                android:id="@+id/p_nombre"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/tv_perfilUsuario"
-                android:textColor="@color/blanco"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:textAllCaps="true"
-                android:textAlignment="center"
-                android:fontFamily="sans-serif-black"
-                android:shadowColor="@color/negro"
-                android:shadowDx="0"
-                android:shadowDy="3"
-                android:shadowRadius="6"
-                android:layout_marginTop="20dp" />
-
-            <!--            <TextView-->
-            <!--                android:id="@+id/p_rol"-->
-            <!--                android:layout_width="wrap_content"-->
-            <!--                android:layout_height="wrap_content"-->
-            <!--                android:text="@string/txt_nivel_usuario"-->
-            <!--                android:textColor="#CCFFFFFF"-->
-            <!--                android:textSize="15sp"-->
-            <!--                android:fontFamily="sans-serif-medium"-->
-            <!--                android:layout_marginTop="6dp" />-->
-
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/card_log_out"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="28dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="40dp"
-        app:cardCornerRadius="28dp"
-        app:cardElevation="12dp"
-        app:cardBackgroundColor="?attr/colorSurface"
-        app:layout_constraintTop_toBottomOf="@id/user_file"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        >
+        android:orientation="vertical">
 
-        <LinearLayout
+        <!-- ── Header con gradiente ── -->
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="28dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:paddingVertical="10dp">
-
-                <ImageView
-                    android:layout_width="26dp"
-                    android:layout_height="26dp"
-                    android:src="@drawable/correo"
-                    app:tint="@color/background_gradient_start" />
-
-                <TextView
-                    android:id="@+id/p_correo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/txt_usuario_correo"
-                    android:textColor="?attr/colorOnSurface"
-                    android:textSize="17sp"
-                    android:fontFamily="sans-serif-medium"
-                    android:layout_marginStart="16dp" />
-            </LinearLayout>
-
-
-            <!-- Edición de nombre de usuario -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:paddingVertical="10dp">
-
-                <ImageView
-                    android:layout_width="26dp"
-                    android:layout_height="26dp"
-                    android:src="@android:drawable/ic_menu_edit"
-                    app:tint="@color/background_gradient_start" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Editar nombre"
-                    android:textColor="?attr/colorOnSurface"
-                    android:textSize="17sp"
-                    android:fontFamily="sans-serif-medium"
-                    android:layout_marginStart="16dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnEditarNombre"
-                    style="@style/Widget.MaterialComponents.Button.TextButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Editar"
-                    android:textColor="@color/background_gradient_start" />
-
-            </LinearLayout>
+            android:layout_height="220dp">
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="?attr/colorOutline"
-                android:layout_marginVertical="12dp" />
+                android:layout_height="180dp"
+                android:background="@drawable/bg_perfil_header" />
 
-            <com.google.android.material.button.MaterialButton
+            <!-- Foto + nombre centrados -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:paddingTop="32dp">
+
+                <com.google.android.material.imageview.ShapeableImageView
+                    android:id="@+id/imgPerfil"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:src="@drawable/icon_perfil"
+                    android:contentDescription="@string/profile_picture"
+                    app:shapeAppearanceOverlay="@style/CircleWithBorder"
+                    app:strokeColor="#FFFFFF"
+                    app:strokeWidth="3dp" />
+
+                <TextView
+                    android:id="@+id/p_nombre"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/tv_perfilUsuario"
+                    android:textColor="#1E293B"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium" />
+
+                <TextView
+                    android:id="@+id/perfil_correo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="@string/txt_usuario_correo"
+                    android:textColor="#64748B"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+        </FrameLayout>
+
+        <!-- ── Tarjeta de estadísticas ── -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="8dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:strokeWidth="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Resumen financiero"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="#94A3B8"
+                    android:letterSpacing="0.08"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- Fila 1: Total gastado | Nº de gastos -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Stat: total gastado -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@drawable/bg_stat_card"
+                        android:padding="14dp"
+                        android:layout_marginEnd="8dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/correo"
+                            app:tint="#E63946"
+                            android:layout_marginBottom="6dp" />
+
+                        <TextView
+                            android:id="@+id/tvStatTotalGastado"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="$0.00"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#1E293B" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Total gastado"
+                            android:textSize="11sp"
+                            android:textColor="#94A3B8"
+                            android:layout_marginTop="2dp" />
+
+                    </LinearLayout>
+
+                    <!-- Stat: número de gastos -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@drawable/bg_stat_card"
+                        android:padding="14dp"
+                        android:layout_marginStart="8dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@android:drawable/ic_menu_agenda"
+                            app:tint="#2A7F6E"
+                            android:layout_marginBottom="6dp" />
+
+                        <TextView
+                            android:id="@+id/tvStatNumGastos"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#1E293B" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Gastos registrados"
+                            android:textSize="11sp"
+                            android:textColor="#94A3B8"
+                            android:layout_marginTop="2dp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Fila 2: Presupuestos activos | Categoría top -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="12dp">
+
+                    <!-- Stat: presupuestos activos -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@drawable/bg_stat_card"
+                        android:padding="14dp"
+                        android:layout_marginEnd="8dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@android:drawable/ic_menu_today"
+                            app:tint="#FF9F1C"
+                            android:layout_marginBottom="6dp" />
+
+                        <TextView
+                            android:id="@+id/tvStatPresupuestosActivos"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            android:textColor="#1E293B" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Presupuestos activos"
+                            android:textSize="11sp"
+                            android:textColor="#94A3B8"
+                            android:layout_marginTop="2dp" />
+
+                    </LinearLayout>
+
+                    <!-- Stat: categoría con más gasto -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@drawable/bg_stat_card"
+                        android:padding="14dp"
+                        android:layout_marginStart="8dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@android:drawable/star_on"
+                            app:tint="#9C27B0"
+                            android:layout_marginBottom="6dp" />
+
+                        <TextView
+                            android:id="@+id/tvStatCategoriaTop"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="—"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:textColor="#1E293B"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:ellipsize="end" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Mayor gasto"
+                            android:textSize="11sp"
+                            android:textColor="#94A3B8"
+                            android:layout_marginTop="2dp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ── Tarjeta de ajustes de cuenta ── -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:strokeWidth="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Cuenta"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="#94A3B8"
+                    android:letterSpacing="0.08"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- Fila: editar nombre -->
+                <LinearLayout
+                    android:id="@+id/btnEditarNombre"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingHorizontal="4dp">
+
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:padding="6dp"
+                        android:background="@drawable/bg_icon_teal"
+                        android:src="@android:drawable/ic_menu_edit"
+                        app:tint="#FFFFFF" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="14dp"
+                        android:text="Editar nombre"
+                        android:textSize="15sp"
+                        android:textColor="#1E293B" />
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@android:drawable/ic_media_next"
+                        app:tint="#CBD5E1" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#F1F5F9"
+                    android:layout_marginVertical="4dp" />
+
+                <!-- Fila: correo (solo lectura) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="4dp">
+
+                    <ImageView
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:padding="6dp"
+                        android:background="@drawable/bg_icon_blue"
+                        android:src="@drawable/correo"
+                        app:tint="#FFFFFF" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="14dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Correo electrónico"
+                            android:textSize="12sp"
+                            android:textColor="#94A3B8" />
+
+                        <TextView
+                            android:id="@+id/p_correo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/txt_usuario_correo"
+                            android:textSize="14sp"
+                            android:textColor="#1E293B" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- ── Botón cerrar sesión ── -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="32dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="2dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:strokeWidth="0dp">
+
+            <LinearLayout
                 android:id="@+id/btnCerrarSesion"
-                style="@style/Widget.Material3.Button.ElevatedButton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
-                android:text="@string/tv_cerrarSesion"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:fontFamily="sans-serif-black"
-                android:letterSpacing="0.1"
-                app:icon="@drawable/exit"
-                app:iconTint="@android:color/white"
-                app:iconGravity="start"
-                app:iconPadding="16dp"
-                app:cornerRadius="18dp"
-                app:backgroundTint="@color/verde_formal"
-                app:rippleColor="#33FFFFFF"
-                android:layout_marginTop="8dp"
-                android:elevation="8dp" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="20dp"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true">
 
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:padding="6dp"
+                    android:background="@drawable/bg_icon_red"
+                    android:src="@drawable/exit"
+                    app:tint="#FFFFFF" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="14dp"
+                    android:text="@string/tv_cerrarSesion"
+                    android:textSize="15sp"
+                    android:textColor="#E63946"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@android:drawable/ic_media_next"
+                    app:tint="#E63946" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+</ScrollView>
