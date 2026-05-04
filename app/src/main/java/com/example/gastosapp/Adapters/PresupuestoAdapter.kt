@@ -13,62 +13,145 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class PresupuestoAdapter(
-    private val onEditarClick: (Presupuesto) -> Unit,
+    private val onEditarClick: (Presupuesto, esAgotado: Boolean) -> Unit,
     private val onEliminarClick: (Presupuesto) -> Unit
-) : RecyclerView.Adapter<PresupuestoAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    companion object {
+        private const val TIPO_PRESUPUESTO = 0
+        private const val TIPO_ENCABEZADO   = 1
+    }
 
     private val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    private var presupuestos = listOf<Presupuesto>()
+
+    // Lista plana que el adapter renderiza: puede contener Presupuesto o String (encabezado)
+    private var items: List<Any> = emptyList()
+
+    // Estado de colapso de la sección agotados
+    private var agotadosColapsados = true
+
+    // Listas originales separadas
+    private var activos  = listOf<Presupuesto>()
+    private var agotados = listOf<Presupuesto>()
 
     fun submitList(list: List<Presupuesto>) {
-        presupuestos = list
+        activos  = list.filter { !esAgotado(it) }
+        agotados = list.filter {  esAgotado(it) }
+        reconstruirItems()
+    }
+
+    private fun esAgotado(p: Presupuesto) = p.montoGastado >= p.cantidad && p.cantidad > 0
+
+    private fun reconstruirItems() {
+        val nueva = mutableListOf<Any>()
+        nueva.addAll(activos)
+
+        if (agotados.isNotEmpty()) {
+            val label = if (agotadosColapsados)
+                "▶  Agotados (${agotados.size})"
+            else
+                "▼  Agotados (${agotados.size})"
+            nueva.add(label)
+            if (!agotadosColapsados) nueva.addAll(agotados)
+        }
+
+        items = nueva
         notifyDataSetChanged()
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_presupuesto, parent, false)
-        return ViewHolder(view)
+    override fun getItemViewType(position: Int) =
+        if (items[position] is String) TIPO_ENCABEZADO else TIPO_PRESUPUESTO
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return if (viewType == TIPO_ENCABEZADO) {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_encabezado_seccion, parent, false)
+            EncabezadoViewHolder(view)
+        } else {
+            val view = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_presupuesto, parent, false)
+            PresupuestoViewHolder(view)
+        }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(presupuestos[position])
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (holder) {
+            is EncabezadoViewHolder  -> holder.bind(items[position] as String)
+            is PresupuestoViewHolder -> holder.bind(items[position] as Presupuesto)
+        }
     }
 
-    override fun getItemCount(): Int = presupuestos.size
+    override fun getItemCount() = items.size
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val tvNombre: TextView = itemView.findViewById(R.id.tvNombrePresupuesto)
-        private val tvCantidad: TextView = itemView.findViewById(R.id.tvCantidad)
-        private val tvCategoria: TextView = itemView.findViewById(R.id.tvCategoria)
+    // ── ViewHolder encabezado ──────────────────────────────────────────────
+    inner class EncabezadoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val tvTitulo: TextView = itemView.findViewById(R.id.tvTituloSeccion)
+
+        fun bind(label: String) {
+            tvTitulo.text = label
+            itemView.setOnClickListener {
+                agotadosColapsados = !agotadosColapsados
+                reconstruirItems()
+            }
+        }
+    }
+
+    // ── ViewHolder presupuesto ─────────────────────────────────────────────
+    inner class PresupuestoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val tvNombre:   TextView    = itemView.findViewById(R.id.tvNombrePresupuesto)
+        private val tvCantidad: TextView    = itemView.findViewById(R.id.tvCantidad)
+        private val tvCategoria:TextView    = itemView.findViewById(R.id.tvCategoria)
         private val tvFechaInicio: TextView = itemView.findViewById(R.id.tvFechaInicio)
-        private val tvFechaFinal: TextView = itemView.findViewById(R.id.tvFechaFinal)
-        private val tvSaldo: TextView = itemView.findViewById(R.id.tvSaldoDisponible)
-        private val tvEstado: TextView = itemView.findViewById(R.id.tvEstadoPresupuesto)
-        private val progressBar: ProgressBar = itemView.findViewById(R.id.progressBarPresupuesto)
-        private val btnEditar: View = itemView.findViewById(R.id.btnEditar)
-        private val btnEliminar: View = itemView.findViewById(R.id.btnEliminar)
+        private val tvFechaFinal:  TextView = itemView.findViewById(R.id.tvFechaFinal)
+        private val tvSaldo:    TextView    = itemView.findViewById(R.id.tvSaldoDisponible)
+        private val tvEstado:   TextView    = itemView.findViewById(R.id.tvEstadoPresupuesto)
+        private val progressBar: ProgressBar= itemView.findViewById(R.id.progressBarPresupuesto)
+        private val btnEditar:  View        = itemView.findViewById(R.id.btnEditar)
+        private val btnEliminar:View        = itemView.findViewById(R.id.btnEliminar)
 
         fun bind(p: Presupuesto) {
-            tvNombre.text = p.categoriaNombre
-            tvCantidad.text = "$${String.format("%.2f", p.cantidad)}"
+            val agotado  = esAgotado(p)
+            val expirado = p.fechaFinal.before(Date()) && !agotado
+
+            tvNombre.text    = p.categoriaNombre
+            tvCantidad.text  = "$${String.format("%.2f", p.cantidad)}"
             tvCategoria.text = "Categoría: ${p.categoriaNombre}"
             tvFechaInicio.text = sdf.format(p.fechaInicio)
-            tvFechaFinal.text = sdf.format(p.fechaFinal)
+            tvFechaFinal.text  = sdf.format(p.fechaFinal)
 
+            // Saldo: si agotado mostrar gastado/total en lugar de número negativo
             val saldo = p.cantidad - p.montoGastado
-            tvSaldo.text = "$${String.format("%.2f", saldo)}"
+            tvSaldo.text = if (agotado)
+                "$${String.format("%.2f", p.montoGastado)} / $${String.format("%.2f", p.cantidad)}"
+            else
+                "$${String.format("%.2f", saldo)}"
 
+            // Barra de progreso
             val porcentaje = ((p.montoGastado / p.cantidad) * 100).toInt().coerceAtMost(100)
             progressBar.progress = porcentaje
 
-            val expirado = p.fechaFinal.before(Date())
-            tvEstado.text = if (expirado) "Expirado" else "Activo"
-            tvEstado.setBackgroundResource(
-                if (expirado) R.drawable.bg_estado_expirado else R.drawable.bg_estado_activo
-            )
-
+            // Badge de estado
             when {
+                agotado  -> {
+                    tvEstado.text = "Agotado"
+                    tvEstado.setBackgroundResource(R.drawable.bg_estado_agotado)
+                }
+                expirado -> {
+                    tvEstado.text = "Expirado"
+                    tvEstado.setBackgroundResource(R.drawable.bg_estado_expirado)
+                }
+                else     -> {
+                    tvEstado.text = "Activo"
+                    tvEstado.setBackgroundResource(R.drawable.bg_estado_activo)
+                }
+            }
+
+            // Colores del saldo y barra
+            when {
+                agotado -> {
+                    tvSaldo.setTextColor(ContextCompat.getColor(itemView.context, R.color.warning))
+                    progressBar.progressTintList = ContextCompat.getColorStateList(itemView.context, R.color.warning)
+                }
                 saldo < 0 -> {
                     tvSaldo.setTextColor(ContextCompat.getColor(itemView.context, R.color.error))
                     progressBar.progressTintList = ContextCompat.getColorStateList(itemView.context, R.color.error)
@@ -83,11 +166,13 @@ class PresupuestoAdapter(
                 }
             }
 
+            // Opacidad visual para agotados
+            itemView.alpha = if (agotado) 0.75f else 1f
+
             btnEditar.setOnClickListener {
                 (btnEditar as? com.airbnb.lottie.LottieAnimationView)?.playAnimation()
-                onEditarClick(p)
+                onEditarClick(p, agotado)
             }
-
             btnEliminar.setOnClickListener {
                 (btnEliminar as? com.airbnb.lottie.LottieAnimationView)?.playAnimation()
                 onEliminarClick(p)

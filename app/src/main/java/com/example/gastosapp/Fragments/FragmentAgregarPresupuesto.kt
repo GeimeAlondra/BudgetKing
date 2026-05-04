@@ -73,14 +73,19 @@ class FragmentAgregarPresupuesto : DialogFragment() {
     }
 
     private fun configurarCategoria() {
-        val todosLosNombres = Categoria.values().map { it.nombre }
-        val categoriaActual = presupuestoAEditar?.categoriaNombre
+        val bloquearCategoria = arguments?.getBoolean("bloquear_categoria", false) ?: false
+        val todosLosNombres   = Categoria.values().map { it.nombre }
+        val categoriaActual   = presupuestoAEditar?.categoriaNombre
 
         val nombresDisponibles = todosLosNombres.filter {
             it !in categoriasOcupadas || it == categoriaActual
         }
 
-        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, nombresDisponibles)
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            nombresDisponibles
+        )
         binding.etCategoria.setAdapter(adapter)
 
         if (presupuestoAEditar == null && nombresDisponibles.isNotEmpty()) {
@@ -89,6 +94,13 @@ class FragmentAgregarPresupuesto : DialogFragment() {
         } else if (nombresDisponibles.isEmpty() && presupuestoAEditar == null) {
             binding.etCategoria.setText("No hay categorías disponibles", false)
             binding.etCategoria.isEnabled = false
+        }
+
+        // Si viene de un presupuesto agotado, bloquear el campo categoría
+        if (bloquearCategoria && categoriaActual != null) {
+            binding.etCategoria.setText(categoriaActual, false)
+            binding.etCategoria.isEnabled = false
+            binding.etCategoria.alpha = 0.6f
         }
     }
 
