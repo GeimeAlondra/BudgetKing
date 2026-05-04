@@ -44,7 +44,7 @@ class FragmentPresupuesto : Fragment() {
 
     private fun setupRecyclerView() {
         adapter = PresupuestoAdapter(
-            onEditarClick = { presupuesto -> abrirEdicion(presupuesto) },
+            onEditarClick  = { presupuesto, esAgotado -> abrirEdicion(presupuesto, esAgotado) },
             onEliminarClick = { presupuesto -> confirmarEliminar(presupuesto) }
         )
 
@@ -79,10 +79,12 @@ class FragmentPresupuesto : Fragment() {
         }.show(parentFragmentManager, "agregar_presupuesto")
     }
 
-    private fun abrirEdicion(p: Presupuesto) {
+    private fun abrirEdicion(p: Presupuesto, esAgotado: Boolean = false) {
         FragmentAgregarPresupuesto().apply {
             arguments = Bundle().apply {
                 putStringArrayList("categorias_ocupadas", ArrayList(obtenerCategoriasOcupadas(p.id)))
+                // Si está agotado, bloqueamos el spinner de categoría
+                putBoolean("bloquear_categoria", esAgotado)
             }
             editarPresupuesto(p) { vm.editarPresupuesto(it) }
         }.show(parentFragmentManager, "editar_presupuesto")
