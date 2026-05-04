@@ -9,20 +9,29 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import com.example.gastosapp.Utils.FirebaseUtils
 import com.example.gastosapp.MainActivity
 import com.example.gastosapp.R
+import com.example.gastosapp.ViewModels.GastoViewModel
+import com.example.gastosapp.ViewModels.PresupuestoViewModel
 import com.example.gastosapp.databinding.FragmentPerfilBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.squareup.picasso.Picasso
+import java.util.Date
 
 class FragmentPerfil : Fragment() {
 
     private var _binding: FragmentPerfilBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    private val gastoVM: GastoViewModel by activityViewModels()
+    private val presupuestoVM: PresupuestoViewModel by activityViewModels()
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentPerfilBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -31,18 +40,16 @@ class FragmentPerfil : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         mostrarDatosUsuario()
-        binding.btnCerrarSesion.setOnClickListener { cerrarSesion() }
+        observarEstadisticas()
 
-        // NC-009/C2: Permitir editar el nombre del usuario
+        binding.btnCerrarSesion.setOnClickListener { cerrarSesion() }
         binding.btnEditarNombre.setOnClickListener { mostrarDialogoEditarNombre() }
     }
 
     private fun mostrarDatosUsuario() {
         val user = FirebaseUtils.auth.currentUser ?: return
-        val uid = user.uid
 
-        // Cargar nombre desde Firestore (fuente de verdad)
-        FirebaseUtils.db.collection("usuarios").document(uid).get()
+        FirebaseUtils.db.collection("usuarios").document(user.uid).get()
             .addOnSuccessListener { doc ->
                 val nombre = doc.getString("nombre") ?: user.displayName ?: "Sin nombre"
                 binding.pNombre.text = nombre
@@ -55,6 +62,31 @@ class FragmentPerfil : Fragment() {
 
         user.photoUrl?.let { uri ->
             Picasso.get().load(uri).placeholder(R.drawable.icon_perfil).into(binding.imgPerfil)
+        }
+    }
+
+    private fun observarEstadisticas() {
+        // Total gastado y número de gastos
+        gastoVM.gastos.observe(viewLifecycleOwner) { gastos ->
+            val total = gastos.sumOf { it.monto }
+            binding.tvStatTotalGastado.text = "$${String.format("%.2f", total)}"
+            binding.tvStatNumGastos.text = gastos.size.toString()
+
+            // Categoría con más gasto
+            val categoriaTop = gastos
+                .groupBy { it.categoriaNombre }
+                .mapValues { entry -> entry.value.sumOf { it.monto } }
+                .maxByOrNull { it.value }
+                ?.key
+            binding.tvStatCategoriaTop.text = categoriaTop ?: "—"
+        }
+
+        // Presupuestos activos (no agotados y no expirados)
+        presupuestoVM.presupuestos.observe(viewLifecycleOwner) { presupuestos ->
+            val activos = presupuestos.count { p ->
+                p.montoGastado < p.cantidad && !p.fechaFinal.before(Date())
+            }
+            binding.tvStatPresupuestosActivos.text = activos.toString()
         }
     }
 
@@ -71,8 +103,6 @@ class FragmentPerfil : Fragment() {
             .setView(input)
             .setPositiveButton("Guardar") { _, _ ->
                 val nuevoNombre = input.text.toString().trim()
-
-                // Validar formato antes de guardar
                 when {
                     nuevoNombre.isEmpty() -> {
                         Toast.makeText(requireContext(), "El nombre no puede estar vacío", Toast.LENGTH_SHORT).show()
@@ -109,7 +139,6 @@ class FragmentPerfil : Fragment() {
     private fun cerrarSesion() {
         FirebaseUtils.auth.signOut()
         GoogleSignIn.getClient(requireActivity(), GoogleSignInOptions.DEFAULT_SIGN_IN).signOut()
-
         startActivity(Intent(requireActivity(), MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         })
