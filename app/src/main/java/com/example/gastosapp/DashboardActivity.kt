@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import com.example.gastosapp.Fragments.*
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.fragment.app.FragmentManager
 import com.example.gastosapp.databinding.ActivityDashboardBinding
 import com.example.gastosapp.Utils.FirebaseUtils
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -77,15 +78,33 @@ class DashboardActivity : AppCompatActivity() {
         binding.bottomNV.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.item_inicio -> {
-                    // Limpiar TODO el back stack
-                    supportFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                    replaceFragment(FragmentInicio(), "INICIO")
+                    supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+
+                    // Si viene de Resumen, animar hacia la derecha
+                    supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(
+                            R.anim.slide_in_from_left,   // Inicio entra desde izquierda
+                            R.anim.slide_out_to_right     // Resumen sale hacia derecha
+                        )
+                        .replace(binding.fragmentoFl.id, FragmentInicio())
+                        .commit()
+
+                    binding.tvTitulo.text = "INICIO"
                     true
                 }
                 R.id.item_resumen -> {
-                    // Limpiar back stack y cargar Resumen
-                    supportFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
-                    replaceFragment(FragmentResumen(), "RESUMEN")
+                    supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+
+                    // Si viene de Inicio, animar hacia la izquierda
+                    supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(
+                            R.anim.slide_in_right,        // Resumen entra desde derecha
+                            R.anim.slide_out_left          // Inicio sale hacia izquierda
+                        )
+                        .replace(binding.fragmentoFl.id, FragmentResumen())
+                        .commit()
+
+                    binding.tvTitulo.text = "RESUMEN"
                     true
                 }
                 else -> false
@@ -97,35 +116,73 @@ class DashboardActivity : AppCompatActivity() {
         binding.tvTitulo.text = titulo
 
         supportFragmentManager.beginTransaction()
+            .setCustomAnimations(
+                R.anim.slide_in_right,   // Animación de entrada
+                R.anim.slide_out_left,   // Animación de salida
+                R.anim.slide_in_left,    // Animación al volver atrás (popEnter)
+                R.anim.slide_out_right   // Animación al volver atrás (popExit)
+            )
             .replace(binding.fragmentoFl.id, fragment)
-            .addToBackStack(null)  // ← Esto es clave para todos
+            .addToBackStack(null)
             .setReorderingAllowed(true)
             .commit()
     }
 
+    private fun replaceFragment(fragment: Fragment, titulo: String) {
+        binding.tvTitulo.text = titulo
+
+        supportFragmentManager.beginTransaction()
+            .setCustomAnimations(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left,
+                R.anim.slide_in_left,
+                R.anim.slide_out_right
+            )
+            .replace(binding.fragmentoFl.id, fragment)
+            .setReorderingAllowed(true)
+            .commit()
+    }
     private fun configurarDrawer() {
         binding.navigationView.setNavigationItemSelectedListener { menuItem ->
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             when (menuItem.itemId) {
                 R.id.nav_perfil -> {
-                    navegarAFragment(FragmentPerfil(), "PERFIL")  // ← Cambiado
+                    navegarAFragment(FragmentPerfil(), "PERFIL")
                     true
                 }
                 R.id.nav_inicio -> {
-                    navegarAFragment(FragmentInicio(), "INICIO")  // ← Cambiado
+                    // Limpiar back stack y cargar Inicio con animación
+                    supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(
+                            R.anim.slide_in_from_left,
+                            R.anim.slide_out_to_right
+                        )
+                        .replace(binding.fragmentoFl.id, FragmentInicio())
+                        .commit()
+                    binding.tvTitulo.text = "INICIO"
                     binding.bottomNV.selectedItemId = R.id.item_inicio
                     true
                 }
                 R.id.nav_gastos -> {
-                    navegarAFragment(FragmentGasto(), "GASTOS")  // ← Cambiado
+                    navegarAFragment(FragmentGasto(), "GASTOS")
                     true
                 }
                 R.id.nav_presupuestos -> {
-                    navegarAFragment(FragmentPresupuesto(), "PRESUPUESTOS")  // ← Cambiado
+                    navegarAFragment(FragmentPresupuesto(), "PRESUPUESTOS")
                     true
                 }
                 R.id.nav_resumen -> {
-                    navegarAFragment(FragmentResumen(), "RESUMEN")  // ← Cambiado
+                    // Limpiar back stack y cargar Resumen con animación
+                    supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
+                    supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(
+                            R.anim.slide_in_right,
+                            R.anim.slide_out_left
+                        )
+                        .replace(binding.fragmentoFl.id, FragmentResumen())
+                        .commit()
+                    binding.tvTitulo.text = "RESUMEN"
                     binding.bottomNV.selectedItemId = R.id.item_resumen
                     true
                 }
@@ -137,7 +194,6 @@ class DashboardActivity : AppCompatActivity() {
             }
         }
     }
-
     private fun configurarToolbar() {
         binding.btnMenu.setOnClickListener {
             binding.drawerLayout.openDrawer(GravityCompat.START)
@@ -178,14 +234,6 @@ class DashboardActivity : AppCompatActivity() {
         tvNavCorreo.text = user.email ?: "Sin correo"
     }
 
-    private fun replaceFragment(fragment: Fragment, titulo: String) {
-        binding.tvTitulo.text = titulo
-
-        supportFragmentManager.beginTransaction()
-            .replace(binding.fragmentoFl.id, fragment)
-            .setReorderingAllowed(true)
-            .commit()
-    }
 
     private fun cerrarSesion() {
         FirebaseUtils.auth.signOut()
