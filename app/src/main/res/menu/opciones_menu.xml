@@ -4,26 +4,11 @@
     <item
         android:id="@+id/item_inicio"
         android:title="@string/item_inicio"
-        android:icon="@drawable/icon_home"
-        />
-
-    <item
-        android:id="@+id/item_gasto"
-        android:title="@string/item_gasto"
-        android:icon="@drawable/icon_gasto"
-        />
-
-    <item
-        android:id="@+id/item_presupuesto"
-        android:title="@string/item_presupuesto"
-        android:icon="@drawable/icon_presupuesto"
-        />
+        android:icon="@drawable/icon_home" />
 
     <item
         android:id="@+id/item_resumen"
         android:title="@string/item_resumen"
-        android:icon="@drawable/icon_resumen"
-        />
-    
+        android:icon="@drawable/icon_resumen" />
 
 </menu>

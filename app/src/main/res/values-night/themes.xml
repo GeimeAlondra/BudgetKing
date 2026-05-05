@@ -4,6 +4,10 @@
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
         <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+
+        <!-- Barra de estado azul oscuro igual que en modo claro -->
+        <item name="android:statusBarColor">@color/azulOscuro</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="Theme.GastosApp" parent="Base.Theme.GastosApp" />
@@ -22,4 +26,3 @@
     </style>
 
 </resources>
-

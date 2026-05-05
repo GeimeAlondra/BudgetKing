@@ -27,8 +27,7 @@
                 android:id="@+id/toolbarRL"
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
-                android:background="@color/azulOscuro"
-                android:paddingStart="8dp"
+                android:background="@android:color/transparent"                android:paddingStart="8dp"
                 android:paddingEnd="16dp">
 
                 <!-- Botón hamburguesa -->
@@ -37,7 +36,7 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@drawable/ic_menu"
-                    android:tint="@color/blanco"
+                    android:tint="@color/negro"
                     android:padding="8dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:contentDescription="Menú"
@@ -53,7 +52,7 @@
                     android:text="INICIO"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:textColor="@color/blanco"
+                    android:textColor="@color/negro"
                     android:gravity="center"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/imgAvatar"
@@ -90,7 +89,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:background="@color/azulOscuro"
+            android:background="#252E66"
             app:itemIconTint="@menu/color_item_navbar"
             app:itemTextColor="@color/blanco"
             app:itemRippleColor="@color/light_green"
