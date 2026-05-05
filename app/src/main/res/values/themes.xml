@@ -4,6 +4,12 @@
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="android:windowAnimationStyle">@style/CustomActivityAnimation</item>
+
+        <!-- Color de la barra de estado -->
+        <item name="android:statusBarColor">@color/azulOscuro</item>
+
+        <!-- Iconos blancos en la barra de estado (porque el fondo es oscuro) -->
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="Theme.GastosApp" parent="Base.Theme.GastosApp" />

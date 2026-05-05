@@ -2,8 +2,8 @@ package com.example.gastosapp
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.activity.viewModels
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.core.view.ViewCompat
@@ -51,6 +51,7 @@ class DashboardActivity : AppCompatActivity() {
         configurarDrawer()
         configurarToolbar()
         cargarAvatares()
+
         // Cada vez que Firestore notifica un cambio en gastos, recalculamos el resumen
         gastoVM.onGastosActualizados = { totalGastado ->
             val montoInicial = presupuestoVM.presupuestos.value?.sumOf { presupuesto -> presupuesto.cantidad } ?: 0.0
@@ -67,21 +68,23 @@ class DashboardActivity : AppCompatActivity() {
             replaceFragment(FragmentInicio(), "INICIO")
         }
 
+        // Escuchar cambios en el back stack para actualizar título
+        supportFragmentManager.addOnBackStackChangedListener {
+            actualizarTituloYBottomNav()
+        }
+
+        // Bottom Navigation con solo 2 items: Inicio y Resumen
         binding.bottomNV.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.item_inicio -> {
+                    // Limpiar TODO el back stack
+                    supportFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
                     replaceFragment(FragmentInicio(), "INICIO")
                     true
                 }
-                R.id.item_gasto -> {
-                    replaceFragment(FragmentGasto(), "GASTOS")
-                    true
-                }
-                R.id.item_presupuesto -> {
-                    replaceFragment(FragmentPresupuesto(), "PRESUPUESTOS")
-                    true
-                }
                 R.id.item_resumen -> {
+                    // Limpiar back stack y cargar Resumen
+                    supportFragmentManager.popBackStack(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE)
                     replaceFragment(FragmentResumen(), "RESUMEN")
                     true
                 }
@@ -90,31 +93,39 @@ class DashboardActivity : AppCompatActivity() {
         }
     }
 
+    fun navegarAFragment(fragment: Fragment, titulo: String) {
+        binding.tvTitulo.text = titulo
+
+        supportFragmentManager.beginTransaction()
+            .replace(binding.fragmentoFl.id, fragment)
+            .addToBackStack(null)  // ← Esto es clave para todos
+            .setReorderingAllowed(true)
+            .commit()
+    }
+
     private fun configurarDrawer() {
         binding.navigationView.setNavigationItemSelectedListener { menuItem ->
             binding.drawerLayout.closeDrawer(GravityCompat.START)
             when (menuItem.itemId) {
                 R.id.nav_perfil -> {
-                    replaceFragment(FragmentPerfil(), "PERFIL")
+                    navegarAFragment(FragmentPerfil(), "PERFIL")  // ← Cambiado
                     true
                 }
                 R.id.nav_inicio -> {
-                    replaceFragment(FragmentInicio(), "INICIO")
+                    navegarAFragment(FragmentInicio(), "INICIO")  // ← Cambiado
                     binding.bottomNV.selectedItemId = R.id.item_inicio
                     true
                 }
                 R.id.nav_gastos -> {
-                    replaceFragment(FragmentGasto(), "GASTOS")
-                    binding.bottomNV.selectedItemId = R.id.item_gasto
+                    navegarAFragment(FragmentGasto(), "GASTOS")  // ← Cambiado
                     true
                 }
                 R.id.nav_presupuestos -> {
-                    replaceFragment(FragmentPresupuesto(), "PRESUPUESTOS")
-                    binding.bottomNV.selectedItemId = R.id.item_presupuesto
+                    navegarAFragment(FragmentPresupuesto(), "PRESUPUESTOS")  // ← Cambiado
                     true
                 }
                 R.id.nav_resumen -> {
-                    replaceFragment(FragmentResumen(), "RESUMEN")
+                    navegarAFragment(FragmentResumen(), "RESUMEN")  // ← Cambiado
                     binding.bottomNV.selectedItemId = R.id.item_resumen
                     true
                 }
@@ -133,7 +144,7 @@ class DashboardActivity : AppCompatActivity() {
         }
 
         binding.imgAvatar.setOnClickListener {
-            replaceFragment(FragmentPerfil(), "PERFIL")
+            navegarAFragment(FragmentPerfil(), "PERFIL")  // ← Cambiado
         }
     }
 
@@ -166,6 +177,7 @@ class DashboardActivity : AppCompatActivity() {
         tvNavNombre.text = FirebaseUtils.displayName() ?: "Usuario"
         tvNavCorreo.text = user.email ?: "Sin correo"
     }
+
     private fun replaceFragment(fragment: Fragment, titulo: String) {
         binding.tvTitulo.text = titulo
 
@@ -190,8 +202,42 @@ class DashboardActivity : AppCompatActivity() {
             binding.drawerLayout.closeDrawer(GravityCompat.START)
         } else if (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStack()
+            // NO llamamos actualizarTituloYBottomNav aquí, el listener lo hará
         } else {
-            super.onBackPressed()
+            val currentFragment = supportFragmentManager.findFragmentById(binding.fragmentoFl.id)
+            if (currentFragment is FragmentResumen) {
+                replaceFragment(FragmentInicio(), "INICIO")
+                binding.bottomNV.selectedItemId = R.id.item_inicio
+            } else {
+                super.onBackPressed()
+            }
+        }
+    }
+
+    private fun actualizarTituloYBottomNav() {
+        val currentFragment = supportFragmentManager.findFragmentById(binding.fragmentoFl.id)
+        when (currentFragment) {
+            is FragmentInicio -> {
+                binding.tvTitulo.text = "INICIO"
+                binding.bottomNV.selectedItemId = R.id.item_inicio
+            }
+
+            is FragmentGasto -> {
+                binding.tvTitulo.text = "GASTOS"
+            }
+
+            is FragmentPresupuesto -> {
+                binding.tvTitulo.text = "PRESUPUESTOS"
+            }
+
+            is FragmentResumen -> {
+                binding.tvTitulo.text = "RESUMEN"
+                binding.bottomNV.selectedItemId = R.id.item_resumen
+            }
+
+            is FragmentPerfil -> {
+                binding.tvTitulo.text = "PERFIL"
+            }
         }
     }
 }
