@@ -6,8 +6,7 @@
         <item name="android:windowAnimationStyle">@style/CustomActivityAnimation</item>
 
         <!-- Color de la barra de estado -->
-        <item name="android:statusBarColor">@color/azulOscuro</item>
-
+        <item name="android:statusBarColor">#1E40AF</item>
         <!-- Iconos blancos en la barra de estado (porque el fondo es oscuro) -->
         <item name="android:windowLightStatusBar">false</item>
     </style>

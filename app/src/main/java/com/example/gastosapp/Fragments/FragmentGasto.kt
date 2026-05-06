@@ -43,10 +43,7 @@ class FragmentGasto : Fragment() {
             abrirDialogoAgregar()
         }
 
-        val linearLayout = binding.fabAgregarGasto.getChildAt(0)
-        linearLayout.setOnClickListener {
-            abrirDialogoAgregar()
-        }
+
     }
 
     private fun setupRecyclerView() {
@@ -72,11 +69,10 @@ class FragmentGasto : Fragment() {
                 adapter.submitList(gastos)
 
                 val totalMes = gastos.sumOf { gasto -> gasto.monto }
-                binding.tvResumenMes.text = "Total del mes: $${String.format("%.2f", totalMes)}"
+                binding.tvTotalGrande.text = String.format("$%.2f", totalMes)
             }
         }
     }
-
     private fun observarPresupuestos() {
         presupuestoVM.presupuestos.observe(viewLifecycleOwner) { presupuestos ->
             val categorias = presupuestos.map { presupuesto -> presupuesto.categoriaNombre }.distinct()

@@ -7,96 +7,87 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".DashboardActivity"
-    android:background="@color/gris">
+    android:background="#F8FAFC">
 
     <!-- CONTENIDO PRINCIPAL -->
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:id="@+id/main"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <!-- TOOLBAR PERSONALIZADO -->
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBar"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/toolbarRL"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            app:elevation="0dp">
+            android:layout_height="64dp"
+            android:background="#1E40AF"
+            android:paddingStart="8dp"
+            android:paddingEnd="16dp">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/toolbarRL"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:background="@android:color/transparent"                android:paddingStart="8dp"
-                android:paddingEnd="16dp">
+            <!-- Botón hamburguesa -->
+            <ImageView
+                android:id="@+id/btnMenu"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_menu"
+                android:tint="#FFFFFF"
+                android:padding="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Menú"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent" />
 
-                <!-- Botón hamburguesa -->
-                <ImageView
-                    android:id="@+id/btnMenu"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/ic_menu"
-                    android:tint="@color/negro"
-                    android:padding="8dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:contentDescription="Menú"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent" />
+            <!-- Título -->
+            <TextView
+                android:id="@+id/tvTitulo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="INICIO"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/imgAvatar"
+                app:layout_constraintStart_toEndOf="@+id/btnMenu"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <!-- Título -->
-                <TextView
-                    android:id="@+id/tvTitulo"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="INICIO"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/negro"
-                    android:gravity="center"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/imgAvatar"
-                    app:layout_constraintStart_toEndOf="@+id/btnMenu"
-                    app:layout_constraintTop_toTopOf="parent" />
+            <!-- Avatar circular -->
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgAvatar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/icon_perfil"
+                android:contentDescription="Perfil"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:civ_border_width="2dp"
+                app:civ_border_color="#FFFFFF" />
 
-                <!-- Avatar circular -->
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/imgAvatar"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/icon_perfil"
-                    android:contentDescription="Perfil"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:civ_border_width="2dp"
-                    app:civ_border_color="@color/blanco" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </com.google.android.material.appbar.AppBarLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- CONTENEDOR DE FRAGMENTOS -->
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragmentoFl"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="56dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+            android:layout_height="0dp"
+            android:layout_weight="1" />
 
         <!-- BOTTOM NAVIGATION -->
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNV"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:background="#252E66"
+            android:background="#1E40AF"
             app:itemIconTint="@menu/color_item_navbar"
-            app:itemTextColor="@color/blanco"
-            app:itemRippleColor="@color/light_green"
-            app:menu="@menu/opciones_menu"
-            app:labelVisibilityMode="selected" />
+            app:itemRippleColor="#3B82F6"
+            app:itemTextColor="#FFFFFF"
+            app:labelVisibilityMode="selected"
+            app:menu="@menu/opciones_menu" />
 
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </LinearLayout>
 
     <!-- NAVIGATION DRAWER -->
     <com.google.android.material.navigation.NavigationView
@@ -104,8 +95,10 @@
         android:layout_width="300dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@color/blanco"
+        android:background="#FFFFFF"
         app:headerLayout="@layout/nav_header"
-        app:menu="@menu/nav_menu" />
+        app:menu="@menu/nav_menu"
+        app:itemTextColor="@menu/color_item_navbar"
+        app:itemIconTint="@menu/color_item_navbar" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

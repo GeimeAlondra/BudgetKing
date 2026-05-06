@@ -4,8 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:background="#FFFFFF">
+    android:padding="5dp"
+    android:background="#F8FAFC">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +19,7 @@
             android:layout_marginBottom="16dp"
             app:cardCornerRadius="12dp"
             app:cardElevation="4dp"
-            app:cardBackgroundColor="#0D1646">
+            app:cardBackgroundColor="#1E40AF">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -67,7 +67,8 @@
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="#EFF6FF">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -80,7 +81,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/icon_gasto"
-                        android:tint="#F44336"
+                        android:tint="#DC2626"
                         android:layout_marginBottom="8dp" />
 
                     <TextView
@@ -89,14 +90,14 @@
                         android:text="Gastos"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:textColor="#000000" />
+                        android:textColor="#1E40AF" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Registrar gasto"
                         android:textSize="12sp"
-                        android:textColor="#666666"
+                        android:textColor="#3B82F6"
                         android:layout_marginTop="4dp" />
 
                 </LinearLayout>
@@ -114,7 +115,8 @@
                 android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="#EFF6FF">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -127,7 +129,7 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/icon_presupuesto"
-                        android:tint="#4CAF50"
+                        android:tint="#3B82F6"
                         android:layout_marginBottom="8dp" />
 
                     <TextView
@@ -136,14 +138,14 @@
                         android:text="Presupuestos"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:textColor="#000000" />
+                        android:textColor="#1E40AF" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Gestionar presupuestos"
                         android:textSize="12sp"
-                        android:textColor="#666666"
+                        android:textColor="#3B82F6"
                         android:layout_marginTop="4dp" />
 
                 </LinearLayout>
@@ -163,7 +165,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="#0D1647"
+                android:background="#1E40AF"
                 android:padding="20dp">
 
                 <TextView

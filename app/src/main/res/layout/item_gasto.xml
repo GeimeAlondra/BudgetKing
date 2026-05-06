@@ -4,9 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="8dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="6dp"
     app:cardBackgroundColor="#FFFFFF"
     app:cardCornerRadius="12dp"
     app:cardElevation="1dp"
@@ -15,102 +13,85 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="14dp">
+        android:padding="12dp">
 
-        <!-- Nombre del gasto -->
         <TextView
             android:id="@+id/tvNombreGasto"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Nombre Gasto"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:textStyle="bold"
             android:textColor="#1E293B"
             app:layout_constraintEnd_toStartOf="@+id/tvCantidadGasto"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Cantidad (monto) -->
         <TextView
             android:id="@+id/tvCantidadGasto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="-$0.00"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="#E63946"
+            android:textColor="#DC2626"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <!-- Fecha -->
         <TextView
             android:id="@+id/tvFechaGasto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="4dp"
             android:text="09/04/2026"
-            android:textSize="13sp"
-            android:textColor="#64748B"
+            android:textSize="12sp"
+            android:textColor="#94A3B8"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvNombreGasto" />
 
-        <!-- Descripción -->
         <TextView
             android:id="@+id/tvDescripcion"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="Sin descripción"
-            android:textSize="13sp"
+            android:textSize="12sp"
             android:textColor="#64748B"
-            android:maxLines="2"
+            android:maxLines="1"
             android:ellipsize="end"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvFechaGasto" />
 
-        <!-- Categoría (oculta) -->
         <TextView
             android:id="@+id/tvCategoria"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone" />
 
-        <!-- Línea divisoria -->
         <View
             android:id="@+id/divider"
             android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_marginTop="12dp"
-            android:background="#E2E8F0"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="8dp"
+            android:background="#F1F5F9"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvDescripcion" />
 
-        <!-- Botones de acción -->
         <LinearLayout
             android:id="@+id/accionesLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="6dp"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider">
 
-            <TextView
-                android:id="@+id/tvEstadoGasto"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text=""
-                android:textSize="12sp"
-                android:textColor="#2A7F6E"
-                android:visibility="gone" />
-
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/btnEditarGasto"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:padding="4dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 app:lottie_rawRes="@raw/editpresupuesto"
@@ -118,9 +99,9 @@
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/btnEliminarGasto"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginStart="8dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginStart="4dp"
                 android:padding="4dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 app:lottie_rawRes="@raw/deletepresupuesto"

@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F7FA"
+    android:background="#F8FAFC"
     android:fillViewport="true">
 
     <LinearLayout
@@ -19,50 +19,55 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
-                android:background="@drawable/bg_perfil_header" />
+                android:layout_height="220dp"
+                android:background="@drawable/bg_perfil_header_blue" />
 
             <!-- Foto + nombre centrados -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:gravity="center_horizontal"
-                android:paddingTop="32dp">
+                android:gravity="center"
+                android:paddingTop="24dp"
+                android:paddingHorizontal="32dp">
 
-                <com.google.android.material.imageview.ShapeableImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/imgPerfil"
                     android:layout_width="96dp"
                     android:layout_height="96dp"
                     android:src="@drawable/icon_perfil"
                     android:contentDescription="@string/profile_picture"
-                    app:shapeAppearanceOverlay="@style/CircleWithBorder"
-                    app:strokeColor="#FFFFFF"
-                    app:strokeWidth="3dp" />
+                    app:civ_border_width="3dp"
+                    app:civ_border_color="#FFFFFF" />
 
                 <TextView
                     android:id="@+id/p_nombre"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:text="@string/tv_perfilUsuario"
-                    android:textColor="#1E293B"
+                    android:textColor="#FFFFFF"
                     android:textSize="20sp"
                     android:textStyle="bold"
-                    android:fontFamily="sans-serif-medium" />
+                    android:fontFamily="sans-serif-medium"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:ellipsize="end" />
 
                 <TextView
                     android:id="@+id/perfil_correo"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@string/txt_usuario_correo"
-                    android:textColor="#64748B"
-                    android:textSize="13sp" />
+                    android:textColor="#DBEAFE"
+                    android:textSize="13sp"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:ellipsize="end" />
 
             </LinearLayout>
         </FrameLayout>
-
         <!-- ── Tarjeta de estadísticas ── -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
@@ -111,7 +116,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/correo"
-                            app:tint="#E63946"
+                            app:tint="#DC2626"
                             android:layout_marginBottom="6dp" />
 
                         <TextView
@@ -148,7 +153,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@android:drawable/ic_menu_agenda"
-                            app:tint="#2A7F6E"
+                            app:tint="#1E40AF"
                             android:layout_marginBottom="6dp" />
 
                         <TextView
@@ -194,7 +199,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@android:drawable/ic_menu_today"
-                            app:tint="#FF9F1C"
+                            app:tint="#3B82F6"
                             android:layout_marginBottom="6dp" />
 
                         <TextView
@@ -231,7 +236,7 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@android:drawable/star_on"
-                            app:tint="#9C27B0"
+                            app:tint="#7C3AED"
                             android:layout_marginBottom="6dp" />
 
                         <TextView
@@ -304,7 +309,7 @@
                         android:layout_width="36dp"
                         android:layout_height="36dp"
                         android:padding="6dp"
-                        android:background="@drawable/bg_icon_teal"
+                        android:background="@drawable/bg_icon_blue"
                         android:src="@android:drawable/ic_menu_edit"
                         app:tint="#FFFFFF" />
 
@@ -414,14 +419,14 @@
                     android:layout_marginStart="14dp"
                     android:text="@string/tv_cerrarSesion"
                     android:textSize="15sp"
-                    android:textColor="#E63946"
+                    android:textColor="#DC2626"
                     android:textStyle="bold" />
 
                 <ImageView
                     android:layout_width="18dp"
                     android:layout_height="18dp"
                     android:src="@android:drawable/ic_media_next"
-                    app:tint="#E63946" />
+                    app:tint="#DC2626" />
 
             </LinearLayout>
 
