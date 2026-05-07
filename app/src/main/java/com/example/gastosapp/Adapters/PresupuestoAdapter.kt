@@ -142,7 +142,7 @@ class PresupuestoAdapter(
                 }
                 else     -> {
                     tvEstado.text = "Activo"
-                    tvEstado.setBackgroundResource(R.drawable.bg_estado_activo)
+                    tvEstado.setBackgroundResource(R.drawable.`bg_estado_activo_blue`)
                 }
             }
 

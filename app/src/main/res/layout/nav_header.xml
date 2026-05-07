@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="180dp"
-    android:background="@color/azulOscuro"
+    android:background="@drawable/bg_perfil_header_blue"
     android:orientation="vertical"
     android:gravity="center"
     android:padding="16dp">
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
         android:text="@string/tv_userEmail"
-        android:textColor="#CCFFFFFF"
+        android:textColor="#DBEAFE"
         android:textSize="14sp" />
 
 </LinearLayout>

@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="#F8FAFC">
 
     <!-- Estado vacío cuando no hay datos suficientes -->
     <LinearLayout
@@ -16,10 +16,17 @@
         android:gravity="center"
         android:visibility="gone">
 
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/icon_resumen"
+            android:tint="#CBD5E1"
+            android:layout_marginBottom="16dp" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Aún no hay datos suficientes para mostrar el resumen."
+            android:text="Aún no hay datos suficientes\npara mostrar el resumen."
             android:textSize="16sp"
             android:textColor="#64748B"
             android:textAlignment="center"
@@ -30,8 +37,8 @@
         android:id="@+id/scrollResumen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp"
-        android:background="#FFFFFF">
+        android:padding="5dp"
+        android:background="#F8FAFC">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -43,23 +50,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#1E40AF">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:background="#920909"
-                    android:padding="16dp">
+                    android:padding="20dp">
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Total Gastado Esta Semana"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:textColor="#DBEAFE"
                         android:layout_marginBottom="8dp" />
 
                     <TextView
@@ -67,7 +73,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="$0.00"
-                        android:textSize="24sp"
+                        android:textSize="32sp"
+                        android:textStyle="bold"
                         android:textColor="#FFFFFF"
                         android:gravity="center" />
 
@@ -80,14 +87,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="20dp">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -95,7 +104,8 @@
                         android:text="Gastos por Categoría"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:layout_marginBottom="12dp" />
+                        android:textColor="#1E293B"
+                        android:layout_marginBottom="16dp" />
 
                     <LinearLayout
                         android:id="@+id/containerCategorias"
@@ -112,14 +122,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="4dp">
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:strokeWidth="0dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="16dp">
+                    android:padding="20dp">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -127,75 +139,111 @@
                         android:text="Resumen General"
                         android:textSize="18sp"
                         android:textStyle="bold"
-                        android:layout_marginBottom="12dp" />
+                        android:textColor="#1E293B"
+                        android:layout_marginBottom="16dp" />
 
+                    <!-- Presupuesto Total -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="12dp"
+                        android:gravity="center_vertical">
+
+                        <View
+                            android:layout_width="8dp"
+                            android:layout_height="8dp"
+                            android:background="@drawable/bg_dot_blue"
+                            android:layout_marginEnd="12dp" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Presupuesto Total:"
-                            android:textSize="14sp" />
+                            android:text="Presupuesto Total"
+                            android:textSize="15sp"
+                            android:textColor="#64748B" />
 
                         <TextView
                             android:id="@+id/tvPresupuestoTotal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="$0.00"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            android:textColor="#1E40AF" />
 
                     </LinearLayout>
 
+                    <!-- Gastado Total -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="8dp">
+                        android:layout_marginBottom="12dp"
+                        android:gravity="center_vertical">
+
+                        <View
+                            android:layout_width="8dp"
+                            android:layout_height="8dp"
+                            android:background="@drawable/bg_dot_red"
+                            android:layout_marginEnd="12dp" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Gastado Total:"
-                            android:textSize="14sp" />
+                            android:text="Gastado Total"
+                            android:textSize="15sp"
+                            android:textColor="#64748B" />
 
                         <TextView
                             android:id="@+id/tvGastadoTotal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="$0.00"
-                            android:textSize="14sp"
+                            android:textSize="16sp"
                             android:textStyle="bold"
-                            android:textColor="#F44336" />
+                            android:textColor="#DC2626" />
 
                     </LinearLayout>
 
+                    <!-- Línea divisoria -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#E2E8F0"
+                        android:layout_marginVertical="12dp" />
+
+                    <!-- Saldo Disponible -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <View
+                            android:layout_width="8dp"
+                            android:layout_height="8dp"
+                            android:background="@drawable/bg_dot_green"
+                            android:layout_marginEnd="12dp" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Saldo Disponible:"
-                            android:textSize="14sp" />
+                            android:text="Saldo Disponible"
+                            android:textSize="15sp"
+                            android:textColor="#64748B" />
 
                         <TextView
                             android:id="@+id/tvTotalActivos"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="$0.00"
-                            android:textSize="14sp"
+                            android:textSize="16sp"
                             android:textStyle="bold"
-                            android:textColor="#4CAF50" />
+                            android:textColor="#1E40AF" />
 
                     </LinearLayout>
 
@@ -210,57 +258,58 @@
                 android:text=" Estadísticas"
                 android:textSize="20sp"
                 android:textStyle="bold"
+                android:textColor="#1E293B"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="16dp"
                 android:gravity="center" />
 
-            <!-- Botón Diario - Outline Azul -->
+            <!-- Botón Diario -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnGraficaDiaria"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:text=" VER GASTOS DIARIOS"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
-                android:textColor="#2196F3"
+                android:textColor="#1E40AF"
                 android:layout_marginBottom="16dp"
-                app:cornerRadius="12dp"
-                app:strokeColor="#2196F3"
+                app:cornerRadius="14dp"
+                app:strokeColor="#1E40AF"
                 app:strokeWidth="2dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp" />
 
-            <!-- Botón Semanal - Outline Verde -->
+            <!-- Botón Semanal -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnGraficaSemanal"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:text=" VER GASTOS SEMANALES"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
-                android:textColor="#4CAF50"
+                android:textColor="#1E40AF"
                 android:layout_marginBottom="16dp"
-                app:cornerRadius="12dp"
-                app:strokeColor="#4CAF50"
+                app:cornerRadius="14dp"
+                app:strokeColor="#1E40AF"
                 app:strokeWidth="2dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp" />
 
-            <!-- Botón Mensual - Outline Naranja -->
+            <!-- Botón Mensual -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnGraficaMensual"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:text=" VER GASTOS MENSUALES"
-                android:textSize="16sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
-                android:textColor="#FF9800"
+                android:textColor="#1E40AF"
                 android:layout_marginBottom="16dp"
-                app:cornerRadius="12dp"
-                app:strokeColor="#FF9800"
+                app:cornerRadius="14dp"
+                app:strokeColor="#1E40AF"
                 app:strokeWidth="2dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp" />

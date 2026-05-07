@@ -1,110 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F7FA"
-    android:paddingStart="16dp"
-    android:paddingTop="12dp"
-    android:paddingEnd="16dp">
+    android:background="#F8FAFC">
 
-    <!-- Encabezado -->
     <LinearLayout
-        android:id="@+id/headerPresupuestos"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tvTotalPresupuestado"
-            android:layout_width="wrap_content"
+        <!-- Header con total -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Total presupuestado: $0.00"
-            android:textColor="#64748B"
-            android:textSize="14sp" />
-    </LinearLayout>
+            android:layout_margin="16dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="1dp"
+            app:strokeWidth="0dp">
 
-    <!-- RecyclerView -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewPresupuestos"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:clipToPadding="false"
-        android:paddingBottom="100dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerPresupuestos" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="20dp">
 
-    <!-- Estado vacío -->
-    <LinearLayout
-        android:id="@+id/emptyStateLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/headerPresupuestos">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Total Presupuestado"
+                    android:textSize="14sp"
+                    android:textColor="#64748B"
+                    android:layout_marginBottom="8dp" />
 
-        <TextView
-            android:id="@+id/tvEmptyState"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="No hay presupuestos. ¡Agrega uno!"
-            android:textSize="16sp"
-            android:textColor="#64748B" />
-    </LinearLayout>
+                <TextView
+                    android:id="@+id/tvTotalPresupuestado"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$0.00"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    android:textColor="#1E40AF" />
 
-    <!-- FAB FLOTANTE -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/fabAgregarPresupuesto"
-        android:layout_width="wrap_content"
-        android:layout_height="56dp"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="40dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:foreground="?attr/selectableItemBackgroundBorderless"
-        app:cardBackgroundColor="#2A7F6E"
-        app:cardCornerRadius="28dp"
-        app:cardElevation="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
+        <!-- RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewPresupuestos"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:clipToPadding="false"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="100dp" />
+
+        <!-- Estado vacío -->
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
+            android:id="@+id/emptyStateLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
             android:gravity="center"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
-            android:clickable="false"
-            android:focusable="false">
+            android:visibility="gone">
 
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@android:drawable/ic_input_add"
-                android:tint="#FFFFFF"
-                android:clickable="false" />
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:src="@drawable/icon_presupuesto"
+                android:tint="#CBD5E1"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:id="@+id/tvEmptyState"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No hay presupuestos"
+                android:textSize="16sp"
+                android:textColor="#64748B" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Agregar presupuesto"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:clickable="false" />
+                android:text="Toca + para crear tu primer presupuesto"
+                android:textSize="13sp"
+                android:textColor="#94A3B8"
+                android:layout_marginTop="8dp" />
 
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+    <!-- FAB -->
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAgregarPresupuesto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="24dp"
+        android:contentDescription="Agregar presupuesto"
+        android:src="@android:drawable/ic_input_add"
+        app:fabSize="normal"
+        app:backgroundTint="#1E40AF"
+        app:tint="#FFFFFF"
+        app:elevation="4dp" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

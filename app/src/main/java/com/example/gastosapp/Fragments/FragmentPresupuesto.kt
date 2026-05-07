@@ -65,8 +65,7 @@ class FragmentPresupuesto : Fragment() {
                 adapter.submitList(presupuestos)
 
                 val total = presupuestos.sumOf { presupuesto -> presupuesto.cantidad }
-                binding.tvTotalPresupuestado.text = "Total presupuestado: $${String.format("%.2f", total)}"
-            }
+                binding.tvTotalPresupuestado.text = String.format("$%.2f", total)            }
         }
     }
 
