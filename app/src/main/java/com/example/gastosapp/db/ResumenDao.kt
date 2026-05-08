@@ -12,4 +12,7 @@ interface ResumenDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun guardar(resumen: ResumenEntity)
+
+    @Query("DELETE FROM resumen")
+    suspend fun eliminarTodos()
 }

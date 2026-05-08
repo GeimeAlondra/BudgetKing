@@ -8,11 +8,15 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.gastosapp.databinding.ActivityRegisterBinding
 import com.example.gastosapp.Utils.FirebaseUtils
+import com.example.gastosapp.db.AppDatabase
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class RegisterActivity : AppCompatActivity() {
 
@@ -169,7 +173,13 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun irAlDashboard() {
-        startActivity(Intent(this, DashboardActivity::class.java))
-        finish()
+        CoroutineScope(Dispatchers.IO).launch {
+            // Limpiar datos locales de cualquier sesión anterior
+            AppDatabase.getInstance(applicationContext).clearAllUserData()
+            runOnUiThread {
+                startActivity(Intent(this@RegisterActivity, DashboardActivity::class.java))
+                finish()
+            }
+        }
     }
 }

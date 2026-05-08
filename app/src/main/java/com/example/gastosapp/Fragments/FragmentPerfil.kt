@@ -10,15 +10,18 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.example.gastosapp.Utils.FirebaseUtils
 import com.example.gastosapp.MainActivity
 import com.example.gastosapp.R
 import com.example.gastosapp.ViewModels.GastoViewModel
 import com.example.gastosapp.ViewModels.PresupuestoViewModel
 import com.example.gastosapp.databinding.FragmentPerfilBinding
+import com.example.gastosapp.db.AppDatabase
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.launch
 import java.util.Date
 
 class FragmentPerfil : Fragment() {
@@ -58,7 +61,7 @@ class FragmentPerfil : Fragment() {
                 binding.pNombre.text = user.displayName ?: "Sin nombre"
             }
 
-        binding.pCorreo.text = user.email ?: "Sin correo"
+        binding.perfilCorreo.text = user.email ?: "Sin correo"
 
         user.photoUrl?.let { uri ->
             Picasso.get().load(uri).placeholder(R.drawable.icon_perfil).into(binding.imgPerfil)
@@ -137,12 +140,19 @@ class FragmentPerfil : Fragment() {
     }
 
     private fun cerrarSesion() {
-        FirebaseUtils.auth.signOut()
-        GoogleSignIn.getClient(requireActivity(), GoogleSignInOptions.DEFAULT_SIGN_IN).signOut()
-        startActivity(Intent(requireActivity(), MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        })
-        requireActivity().finish()
+        lifecycleScope.launch {
+            // Borrar Room primero, antes de que cambie el uid
+            AppDatabase.getInstance(requireContext()).clearAllUserData()
+
+            // Cerrar sesión de Firebase y Google
+            FirebaseUtils.auth.signOut()
+            GoogleSignIn.getClient(requireActivity(), GoogleSignInOptions.DEFAULT_SIGN_IN).signOut()
+
+            startActivity(Intent(requireActivity(), MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            })
+            requireActivity().finish()
+        }
     }
 
     override fun onDestroyView() {

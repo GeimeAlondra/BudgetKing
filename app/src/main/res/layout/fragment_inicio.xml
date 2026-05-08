@@ -49,12 +49,12 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- BOTONES DE ACCESO RÁPIDO: GASTOS Y PRESUPUESTOS -->
+        <!-- BOTONES DE ACCESO RÁPIDO -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginBottom="16dp">
+            android:layout_marginBottom="18dp">
 
             <!-- Botón de Gastos -->
             <androidx.cardview.widget.CardView
@@ -82,13 +82,13 @@
                         android:layout_height="48dp"
                         android:src="@drawable/icon_gasto"
                         android:tint="#DC2626"
-                        android:layout_marginBottom="8dp" />
+                        android:layout_marginBottom="4dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Gastos"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="#1E40AF" />
 
@@ -96,7 +96,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Registrar gasto"
-                        android:textSize="12sp"
+                        android:textSize="10sp"
                         android:textColor="#3B82F6"
                         android:layout_marginTop="4dp" />
 
@@ -130,13 +130,13 @@
                         android:layout_height="48dp"
                         android:src="@drawable/icon_presupuesto"
                         android:tint="#3B82F6"
-                        android:layout_marginBottom="8dp" />
+                        android:layout_marginBottom="4dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Presupuestos"
-                        android:textSize="18sp"
+                        android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="#1E40AF" />
 
@@ -144,7 +144,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Gestionar presupuestos"
-                        android:textSize="12sp"
+                        android:textSize="10sp"
                         android:textColor="#3B82F6"
                         android:layout_marginTop="4dp" />
 
