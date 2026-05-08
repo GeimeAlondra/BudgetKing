@@ -33,23 +33,6 @@
         app:layout_constraintBottom_toTopOf="@+id/loginCard"
         android:layout_marginBottom="12dp" />
 
-    <!-- Título sobre el logo -->
-    <TextView
-        android:id="@+id/InicioDeSecion"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/titulo_login"
-        android:textSize="26sp"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"
-        android:textAllCaps="true"
-        android:letterSpacing="0.05"
-        android:layout_marginTop="48dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/gifImageView" />
-
     <!-- Tarjeta con formulario -->
     <androidx.cardview.widget.CardView
         android:id="@+id/loginCard"

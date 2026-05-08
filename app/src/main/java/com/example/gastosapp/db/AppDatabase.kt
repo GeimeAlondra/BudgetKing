@@ -19,6 +19,13 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun presupuestoDao(): PresupuestoDao
     abstract fun resumenDao(): ResumenDao
 
+    // Limpia todas las tablas al cerrar sesión
+    suspend fun clearAllUserData() {
+        gastoDao().eliminarTodos()
+        presupuestoDao().eliminarTodos()
+        resumenDao().eliminarTodos()
+    }
+
     companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null

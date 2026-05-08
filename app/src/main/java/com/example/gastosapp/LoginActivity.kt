@@ -13,11 +13,15 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.example.gastosapp.databinding.ActivityLoginBinding
 import com.example.gastosapp.Utils.FirebaseUtils
+import com.example.gastosapp.db.AppDatabase
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.GoogleAuthProvider
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
@@ -195,7 +199,13 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun irDashboard() {
-        startActivity(Intent(this, DashboardActivity::class.java))
-        finish()
+        CoroutineScope(Dispatchers.IO).launch {
+            // Limpiar datos locales antes de cargar los del usuario actual
+            AppDatabase.getInstance(applicationContext).clearAllUserData()
+            runOnUiThread {
+                startActivity(Intent(this@LoginActivity, DashboardActivity::class.java))
+                finish()
+            }
+        }
     }
 }
