@@ -4,160 +4,305 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:background="@android:color/transparent"
+    android:background="#F8FAFC"
     android:overScrollMode="never"
-    android:fadingEdgeLength="0dp"
-    android:requiresFadingEdge="none">
+    android:fillViewport="true">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardViewGasto"
-        android:layout_width="350dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp"
-        app:cardBackgroundColor="#FFFFFF"
-        app:cardUseCompatPadding="true"
-        app:cardPreventCornerOverlap="false"
-        android:layout_gravity="center">
+        android:orientation="vertical"
+        android:padding="16dp">
 
-        <LinearLayout
+        <!-- Header -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#FFFFFF"
-            android:orientation="vertical"
-            android:padding="24dp">
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="#DC2626"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:strokeWidth="0dp">
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:gravity="center"
-                android:text="Agregar Gasto"
-                android:textColor="@color/negro"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <!-- Nombre del gasto -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:orientation="horizontal">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etNombreGasto"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:hint="Nombre del gasto"
-                    android:textColor="@color/negro" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Descripción del gasto -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etDescripcionGasto"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Descripción"
-                    android:textColor="@color/negro" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Cantidad -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etCantidadGasto"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Cantidad"
-                    android:inputType="numberDecimal"
-                    android:textColor="@color/negro" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Categoría -->
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp">
-
-                <AutoCompleteTextView
-                    android:id="@+id/etCategoriaGasto"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Categoría"
-                    android:inputType="none"
-                    android:textColor="@color/negro" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Fecha Final -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="20dp">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Fecha:"
-                    android:textSize="14sp" />
-
-                <Button
-                    android:id="@+id/btnFechaGasto"
-                    android:layout_width="0dp"
+                <ImageView
+                    android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:layout_weight="1.5"
-                    android:backgroundTint="#000000"
-                    android:text="Seleccionar"
-                    android:textSize="12sp" />
+                    android:src="@drawable/icon_gasto"
+                    android:tint="#FFFFFF"
+                    android:layout_marginBottom="8dp" />
 
                 <TextView
-                    android:id="@+id/etFechaGasto"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="No seleccionada"
-                    android:textSize="12sp" />
+                    android:text="Nuevo Gasto"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Registra los detalles de tu gasto"
+                    android:textSize="13sp"
+                    android:textColor="#FECACA"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center" />
 
             </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
-            <!-- Botones -->
-            <Button
-                android:id="@+id/btnGuardarGasto"
+        <!-- Formulario -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="1dp"
+            app:strokeWidth="0dp">
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_marginBottom="10dp"
-                android:backgroundTint="#097117"
-                android:text="GUARDAR GASTO"
-                android:textSize="16sp" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="20dp">
 
-            <Button
-                android:id="@+id/btnCancelarGasto"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:backgroundTint="#920909"
-                android:text="CANCELAR"
-                android:textSize="16sp" />
+                <!-- Sección: Detalles -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DETALLES"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="#94A3B8"
+                    android:letterSpacing="0.08"
+                    android:layout_marginBottom="10dp" />
 
-        </LinearLayout>
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="14dp"
+                    app:boxCornerRadiusBottomEnd="10dp"
+                    app:boxCornerRadiusBottomStart="10dp"
+                    app:boxCornerRadiusTopEnd="10dp"
+                    app:boxCornerRadiusTopStart="10dp"
+                    app:boxStrokeColor="#E2E8F0"
+                    app:hintTextColor="#64748B">
 
-    </androidx.cardview.widget.CardView>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etNombreGasto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Nombre del gasto"
+                        android:textColor="#1E293B"
+                        android:textSize="15sp" />
 
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    app:boxCornerRadiusBottomEnd="10dp"
+                    app:boxCornerRadiusBottomStart="10dp"
+                    app:boxCornerRadiusTopEnd="10dp"
+                    app:boxCornerRadiusTopStart="10dp"
+                    app:boxStrokeColor="#E2E8F0"
+                    app:hintTextColor="#64748B">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etDescripcionGasto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Descripción (opcional)"
+                        android:textColor="#1E293B"
+                        android:textSize="15sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#F1F5F9"
+                    android:layout_marginBottom="20dp" />
+
+                <!-- Sección: Monto -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MONTO"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="#94A3B8"
+                    android:letterSpacing="0.08"
+                    android:layout_marginBottom="10dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    app:prefixText="$"
+                    app:prefixTextColor="#DC2626"
+                    app:boxCornerRadiusBottomEnd="10dp"
+                    app:boxCornerRadiusBottomStart="10dp"
+                    app:boxCornerRadiusTopEnd="10dp"
+                    app:boxCornerRadiusTopStart="10dp"
+                    app:boxStrokeColor="#E2E8F0"
+                    app:hintTextColor="#64748B">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/etCantidadGasto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="0.00"
+                        android:inputType="numberDecimal"
+                        android:textColor="#1E293B"
+                        android:textSize="15sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#F1F5F9"
+                    android:layout_marginBottom="20dp" />
+
+                <!-- Sección: Categoría -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CATEGORÍA"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="#94A3B8"
+                    android:letterSpacing="0.08"
+                    android:layout_marginBottom="10dp" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    app:boxCornerRadiusBottomEnd="10dp"
+                    app:boxCornerRadiusBottomStart="10dp"
+                    app:boxCornerRadiusTopEnd="10dp"
+                    app:boxCornerRadiusTopStart="10dp"
+                    app:boxStrokeColor="#E2E8F0"
+                    app:hintTextColor="#64748B">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/etCategoriaGasto"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="Selecciona una categoría"
+                        android:inputType="none"
+                        android:textColor="#1E293B"
+                        android:textSize="15sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#F1F5F9"
+                    android:layout_marginBottom="20dp" />
+
+                <!-- Sección: Fecha -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="FECHA"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="#94A3B8"
+                    android:letterSpacing="0.08"
+                    android:layout_marginBottom="12dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Fecha del gasto"
+                            android:textSize="12sp"
+                            android:textColor="#64748B"
+                            android:layout_marginBottom="4dp" />
+
+                        <TextView
+                            android:id="@+id/etFechaGasto"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="No seleccionada"
+                            android:textSize="14sp"
+                            android:textColor="#1E293B" />
+
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnFechaGasto"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="36dp"
+                        android:text="Elegir"
+                        android:textSize="13sp"
+                        android:textColor="#DC2626"
+                        app:strokeColor="#DC2626"
+                        app:cornerRadius="8dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Botones de acción -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGuardarGasto"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Guardar gasto"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"
+            app:backgroundTint="#DC2626"
+            app:cornerRadius="12dp"
+            app:icon="@drawable/icon_gasto"
+            app:iconTint="#FFFFFF"
+            app:iconGravity="textStart" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCancelarGasto"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="Cancelar"
+            android:textSize="15sp"
+            android:textColor="#64748B"
+            android:layout_marginBottom="16dp"
+            app:strokeColor="#E2E8F0"
+            app:cornerRadius="12dp" />
+
+    </LinearLayout>
 </ScrollView>

@@ -63,7 +63,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Total Gastado Esta Semana"
+                        android:text="Total gastado esta semana"
                         android:textSize="16sp"
                         android:textColor="#DBEAFE"
                         android:layout_marginBottom="8dp" />
@@ -101,7 +101,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Gastos por Categoría"
+                        android:text="Gastos por categoría"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="#1E293B"
@@ -136,7 +136,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Resumen General"
+                        android:text="Resumen general"
                         android:textSize="18sp"
                         android:textStyle="bold"
                         android:textColor="#1E293B"
@@ -160,7 +160,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Presupuesto Total"
+                            android:text="Presupuesto total"
                             android:textSize="15sp"
                             android:textColor="#64748B" />
 
@@ -193,7 +193,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Gastado Total"
+                            android:text="Gastado total"
                             android:textSize="15sp"
                             android:textColor="#64748B" />
 
@@ -232,7 +232,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Saldo Disponible"
+                            android:text="Saldo disponible"
                             android:textSize="15sp"
                             android:textColor="#64748B" />
 
