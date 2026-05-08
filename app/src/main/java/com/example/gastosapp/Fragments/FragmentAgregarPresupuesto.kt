@@ -27,6 +27,14 @@ class FragmentAgregarPresupuesto : DialogFragment() {
     private var presupuestoAEditar: Presupuesto? = null
     private var categoriasOcupadas = listOf<String>()
 
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+    }
+
     fun setOnPresupuestoSaved(listener: (Presupuesto) -> Unit) {
         onPresupuestoSaved = listener
     }

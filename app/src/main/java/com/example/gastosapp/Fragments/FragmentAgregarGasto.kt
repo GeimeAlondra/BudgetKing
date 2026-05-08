@@ -26,6 +26,14 @@ class FragmentAgregarGasto : DialogFragment() {
     private var onGastoSaved: ((Gasto) -> Unit)? = null
     private var gastoAEditar: Gasto? = null
 
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+    }
+
     fun setOnGastoSaved(listener: (Gasto) -> Unit) {
         onGastoSaved = listener
     }
