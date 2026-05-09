@@ -85,7 +85,7 @@ class FragmentInicio : Fragment() {
         }
 
         gastos.sortedByDescending { it.fecha }
-            .take(5)
+            .take(3)
             .forEach { binding.containerGastosRecientes.addView(crearItemGasto(it)) }
     }
 

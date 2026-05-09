@@ -82,10 +82,10 @@
             android:layout_height="wrap_content"
             android:background="#1E40AF"
             app:itemIconTint="@menu/color_item_navbar"
+            app:itemTextColor="@menu/color_item_navbar"
             app:itemRippleColor="#3B82F6"
-            app:itemTextColor="#FFFFFF"
-            app:labelVisibilityMode="selected"
-            app:menu="@menu/opciones_menu" />
+            app:menu="@menu/opciones_menu"
+            app:labelVisibilityMode="selected" />
 
     </LinearLayout>
 
@@ -98,7 +98,7 @@
         android:background="#FFFFFF"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/nav_menu"
-        app:itemTextColor="@menu/color_item_navbar"
-        app:itemIconTint="@menu/color_item_navbar" />
+        app:itemTextColor="@menu/color_item_drawer"
+        app:itemIconTint="@menu/color_item_drawer" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

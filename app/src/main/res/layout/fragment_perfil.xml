@@ -55,7 +55,7 @@
                     android:ellipsize="end" />
 
                 <TextView
-                    android:id="@+id/perfil_correo"
+                    android:id="@+id/perfil_correo_header"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
@@ -367,10 +367,10 @@
                             android:textColor="#94A3B8" />
 
                         <TextView
-                            android:id="@+id/p_correo"
+                            android:id="@+id/perfilCorreo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/txt_usuario_correo"
+                            android:text="Cargando..."
                             android:textSize="14sp"
                             android:textColor="#1E293B" />
 

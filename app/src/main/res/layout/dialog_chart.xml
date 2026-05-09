@@ -16,7 +16,7 @@
         android:textStyle="bold"
         android:layout_marginBottom="12dp"
         android:layout_gravity="center"
-        android:textColor="#333333" />
+        android:textColor="#1E40AF" />
 
     <HorizontalScrollView
         android:id="@+id/scrollView"
@@ -48,7 +48,8 @@
         android:text="CERRAR"
         android:textSize="13sp"
         android:textStyle="bold"
-        app:cornerRadius="6dp"
-        app:backgroundTint="#F44336" />
+        android:textColor="#FFFFFF"
+        app:cornerRadius="8dp"
+        app:backgroundTint="#1E40AF" />
 
 </LinearLayout>
