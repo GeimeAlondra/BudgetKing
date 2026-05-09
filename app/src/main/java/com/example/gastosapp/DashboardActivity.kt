@@ -3,12 +3,10 @@ package com.example.gastosapp
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import com.example.gastosapp.Fragments.*
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.FragmentManager
 import com.example.gastosapp.databinding.ActivityDashboardBinding
@@ -22,7 +20,8 @@ import com.example.gastosapp.ViewModels.ResumenViewModel
 
 class DashboardActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityDashboardBinding
+    lateinit var binding: ActivityDashboardBinding
+        private set
 
     private val gastoVM: GastoViewModel by viewModels()
     private val presupuestoVM: PresupuestoViewModel by viewModels()
@@ -154,7 +153,6 @@ class DashboardActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_resumen -> {
-                    // Usar exactamente la misma lógica que el Bottom Navigation
                     supportFragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE)
                     supportFragmentManager.beginTransaction()
                         .setCustomAnimations(

@@ -6,11 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import com.example.gastosapp.DashboardActivity
 import com.example.gastosapp.Utils.FirebaseUtils
 import com.example.gastosapp.MainActivity
 import com.example.gastosapp.R
@@ -56,26 +58,39 @@ class FragmentPerfil : Fragment() {
             .addOnSuccessListener { doc ->
                 val nombre = doc.getString("nombre") ?: user.displayName ?: "Sin nombre"
                 binding.pNombre.text = nombre
+                actualizarNavHeader(nombre, user.email)
             }
             .addOnFailureListener {
-                binding.pNombre.text = user.displayName ?: "Sin nombre"
+                val nombre = user.displayName ?: "Sin nombre"
+                binding.pNombre.text = nombre
+                actualizarNavHeader(nombre, user.email)
             }
 
-        binding.perfilCorreo.text = user.email ?: "Sin correo"
+        // Para el header
+        binding.perfilCorreoHeader.text = user.email ?: "Sin correo"
 
+        // Para la sección Cuenta
+        binding.perfilCorreo.text = user.email ?: "Sin correo"
         user.photoUrl?.let { uri ->
             Picasso.get().load(uri).placeholder(R.drawable.icon_perfil).into(binding.imgPerfil)
         }
     }
 
+    private fun actualizarNavHeader(nombre: String, email: String?) {
+        val activity = requireActivity() as? DashboardActivity ?: return
+        val headerView = activity.binding.navigationView.getHeaderView(0)
+        val tvNavNombre = headerView.findViewById<TextView>(R.id.tvNavNombre)
+        val tvNavCorreo = headerView.findViewById<TextView>(R.id.tvNavCorreo)
+        tvNavNombre.text = nombre
+        tvNavCorreo.text = email ?: "Sin correo"
+    }
+
     private fun observarEstadisticas() {
-        // Total gastado y número de gastos
         gastoVM.gastos.observe(viewLifecycleOwner) { gastos ->
             val total = gastos.sumOf { it.monto }
             binding.tvStatTotalGastado.text = "$${String.format("%.2f", total)}"
             binding.tvStatNumGastos.text = gastos.size.toString()
 
-            // Categoría con más gasto
             val categoriaTop = gastos
                 .groupBy { it.categoriaNombre }
                 .mapValues { entry -> entry.value.sumOf { it.monto } }
@@ -84,7 +99,6 @@ class FragmentPerfil : Fragment() {
             binding.tvStatCategoriaTop.text = categoriaTop ?: "—"
         }
 
-        // Presupuestos activos (no agotados y no expirados)
         presupuestoVM.presupuestos.observe(viewLifecycleOwner) { presupuestos ->
             val activos = presupuestos.count { p ->
                 p.montoGastado < p.cantidad && !p.fechaFinal.before(Date())
@@ -129,6 +143,7 @@ class FragmentPerfil : Fragment() {
                     .update("nombre", nuevoNombre)
                     .addOnSuccessListener {
                         binding.pNombre.text = nuevoNombre
+                        actualizarNavHeader(nuevoNombre, FirebaseUtils.email())
                         Toast.makeText(requireContext(), "Nombre actualizado", Toast.LENGTH_SHORT).show()
                     }
                     .addOnFailureListener {
@@ -141,13 +156,9 @@ class FragmentPerfil : Fragment() {
 
     private fun cerrarSesion() {
         lifecycleScope.launch {
-            // Borrar Room primero, antes de que cambie el uid
             AppDatabase.getInstance(requireContext()).clearAllUserData()
-
-            // Cerrar sesión de Firebase y Google
             FirebaseUtils.auth.signOut()
             GoogleSignIn.getClient(requireActivity(), GoogleSignInOptions.DEFAULT_SIGN_IN).signOut()
-
             startActivity(Intent(requireActivity(), MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             })

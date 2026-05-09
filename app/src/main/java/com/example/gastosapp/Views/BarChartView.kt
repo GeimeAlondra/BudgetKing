@@ -20,31 +20,31 @@ class BarChartView @JvmOverloads constructor(
 
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         textAlign = Paint.Align.CENTER
-        color = Color.parseColor("#2C3E50")
+        color = Color.parseColor("#1E293B")
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         textSize = 26f
     }
 
     private val valuePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         textAlign = Paint.Align.CENTER
-        color = Color.parseColor("#7F8C8D")
+        color = Color.parseColor("#64748B")
         typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
         textSize = 22f
     }
 
     private val gridPaint = Paint().apply {
-        color = Color.parseColor("#ECF0F1")
+        color = Color.parseColor("#E2E8F0")
         strokeWidth = 1.5f
         pathEffect = DashPathEffect(floatArrayOf(8f, 8f), 0f)
     }
 
     private val axisPaint = Paint().apply {
-        color = Color.parseColor("#BDC3C7")
+        color = Color.parseColor("#CBD5E1")
         strokeWidth = 2.5f
     }
 
     private val bgPaint = Paint().apply {
-        color = Color.parseColor("#FAFBFC")
+        color = Color.parseColor("#F8FAFC")
         style = Paint.Style.FILL
     }
 
@@ -62,30 +62,30 @@ class BarChartView @JvmOverloads constructor(
     private var maxValue: Float = 1f
     private var animationProgress = 0f
 
-    // === Configuración (MISMAS DIMENSIONES) ===
+    // === Configuración ===
     private var barCornerRadius = 12f
     private var showGrid = true
     private var labelTextSize = 24f
     private var valueTextSize = 22f
     private var gridLinesCount = 4
 
-    // Paleta de colores moderna
+    // Paleta de colores Azul Corporativo + complementarios
     private val colorPalette = listOf(
-        Color.parseColor("#FF6B6B"), // Coral
-        Color.parseColor("#4ECDC4"), // Turquesa
-        Color.parseColor("#45B7D1"), // Azul cielo
-        Color.parseColor("#96CEB4"), // Verde menta
-        Color.parseColor("#FFEAA7"), // Amarillo pastel
-        Color.parseColor("#DDA0DD"), // Lavanda
-        Color.parseColor("#98D8C8"), // Verde agua
-        Color.parseColor("#F7DC6F"), // Amarillo
-        Color.parseColor("#BB8FCE"), // Púrpura
-        Color.parseColor("#85C1E9"), // Azul claro
-        Color.parseColor("#FF8A80"), // Salmón
-        Color.parseColor("#80DEEA"), // Cyan
-        Color.parseColor("#A5D6A7"), // Verde
-        Color.parseColor("#FFCC80"), // Naranja
-        Color.parseColor("#CE93D8")  // Lila
+        Color.parseColor("#1E40AF"), // Azul corporativo
+        Color.parseColor("#3B82F6"), // Azul medio
+        Color.parseColor("#60A5FA"), // Azul claro
+        Color.parseColor("#93C5FD"), // Azul pastel
+        Color.parseColor("#2563EB"), // Azul real
+        Color.parseColor("#7C3AED"), // Púrpura
+        Color.parseColor("#8B5CF6"), // Violeta
+        Color.parseColor("#06B6D4"), // Cyan
+        Color.parseColor("#10B981"), // Verde esmeralda
+        Color.parseColor("#F59E0B"), // Ámbar
+        Color.parseColor("#EF4444"), // Rojo
+        Color.parseColor("#EC4899"), // Rosa
+        Color.parseColor("#14B8A6"), // Teal
+        Color.parseColor("#6366F1"), // Índigo
+        Color.parseColor("#0EA5E9")  // Celeste
     )
 
     init {
@@ -100,7 +100,7 @@ class BarChartView @JvmOverloads constructor(
         setLayerType(LAYER_TYPE_SOFTWARE, null)
     }
 
-    data class BarData(val label: String, val value: Float, val color: Int = Color.parseColor("#4CAF50"))
+    data class BarData(val label: String, val value: Float, val color: Int = Color.parseColor("#1E40AF"))
 
     fun setData(data: List<BarData>) {
         this.chartData = data.mapIndexed { index, barData ->
@@ -137,7 +137,7 @@ class BarChartView @JvmOverloads constructor(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val desiredWidth = suggestedMinimumWidth + paddingLeft + paddingRight
-        val desiredHeight = 400 + paddingTop + paddingBottom  // MISMA DIMENSIÓN
+        val desiredHeight = 400 + paddingTop + paddingBottom
         setMeasuredDimension(resolveSize(desiredWidth, widthMeasureSpec), resolveSize(desiredHeight, heightMeasureSpec))
     }
 
@@ -218,7 +218,7 @@ class BarChartView @JvmOverloads constructor(
             // Valor encima de la barra
             if (bar.value > 0 && animationProgress > 0.9f) {
                 valuePaint.textSize = valueTextSize
-                valuePaint.color = Color.parseColor("#7F8C8D")
+                valuePaint.color = Color.parseColor("#64748B")
                 canvas.drawText("$${bar.value.toInt()}", (barLeft + barRight) / 2, barTop - 6f, valuePaint)
             }
         }
@@ -228,7 +228,7 @@ class BarChartView @JvmOverloads constructor(
 
     private fun drawLabels(canvas: Canvas, y: Float, usableWidth: Float) {
         textPaint.textSize = labelTextSize
-        textPaint.color = Color.parseColor("#95A5A6")
+        textPaint.color = Color.parseColor("#64748B")
         val barWidth = usableWidth / chartData.size * 0.55f
         val spacing = usableWidth / chartData.size * 0.45f
 
@@ -245,7 +245,7 @@ class BarChartView @JvmOverloads constructor(
             width - paddingRight.toFloat(), height - paddingBottom.toFloat(), 12f, 12f, bgPaint)
 
         textPaint.textSize = 32f
-        textPaint.color = Color.parseColor("#BDC3C7")
+        textPaint.color = Color.parseColor("#CBD5E1")
         canvas.drawText(" Sin datos", width / 2f, height / 2f, textPaint)
     }
 
